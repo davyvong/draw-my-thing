@@ -1,0 +1,18 @@
+<ifModule mod_rewrite.c>
+  Options +FollowSymLinks
+  IndexIgnore */*
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*) https://%{HTTP_HOST}/$1 [R,L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !\/$
+  RewriteRule ^(.*) /
+</ifModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "sw\.js$">
+    Header set Cache-Control "private, no-cache, no-store, proxy-revalidate, no-transform"
+    Header set Pragma "no-cache"
+  </FilesMatch>
+</IfModule>

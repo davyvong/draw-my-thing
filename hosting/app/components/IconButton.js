@@ -1,0 +1,31 @@
+import styled from 'styled-components';
+
+import colors from 'styles/colors';
+
+import hexToRGB from 'utils/hexToRGB';
+
+const IconButton = styled.button`
+  align-items: center;
+  border-radius: 50%;
+  color: ${({ color }) => color || colors.gray};
+  display: flex;
+  height: 2rem;
+  justify-content: center;
+  padding: 0;
+  transition: 150ms ease-in-out;
+  width: 2rem;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  &:hover {
+    background-color: ${({ color }) => hexToRGB(color || colors.gray, 0.05)};
+  }
+
+  &:active {
+    background-color: ${({ color }) => hexToRGB(color || colors.gray, 0.15)};
+  }
+`;
+
+export default IconButton;

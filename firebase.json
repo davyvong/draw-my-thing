@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "predeploy": [
+      "npm --prefix ./hosting run lint",
+      "npm --prefix ./hosting run build"
+    ],
+    "public": "hosting/build"
+  }
+}

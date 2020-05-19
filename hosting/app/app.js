@@ -6,7 +6,6 @@ import ReactDOM from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 
-import { DialogProvider } from 'states/Dialog';
 import { LayoutProvider } from 'states/Layout';
 
 import OfflinePluginRuntime from 'offline-plugin/runtime';
@@ -24,11 +23,9 @@ const render = () => {
   ReactDOM.render(
     <HelmetProvider>
       <BrowserRouter>
-        <DialogProvider>
-          <LayoutProvider>
-            <App />
-          </LayoutProvider>
-        </DialogProvider>
+        <LayoutProvider>
+          <App />
+        </LayoutProvider>
       </BrowserRouter>
     </HelmetProvider>,
     MOUNT_NODE,

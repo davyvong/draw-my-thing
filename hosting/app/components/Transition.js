@@ -4,10 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const Transition = React.forwardRef(({ children, delay, duration, onIn, onOut, ...props }, ref) => {
   const transition = useRef(null);
-  const [state, setState] = useState({
-    opacity: props.in ? 1 : 0,
-    shouldRender: props.in,
-  });
+  const [opacity, setOpacity] = useState(props.in ? 1 : 0);
+  const [shouldRender, setShouldRender] = useState(props.in);
 
   useEffect(() => {
     if (props.in) {
@@ -18,38 +16,34 @@ const Transition = React.forwardRef(({ children, delay, duration, onIn, onOut, .
   }, [props.in]);
 
   useEffect(() => {
-    if (state.shouldRender) {
+    if (shouldRender) {
       if (isFunction(onIn)) {
         onIn(ref);
       }
     } else if (isFunction(onOut)) {
       onOut(ref);
     }
-  }, [state.shouldRender]);
-
-  function updateState(updates = {}) {
-    setState(prevState => ({ ...prevState, ...updates }));
-  }
+  }, [shouldRender]);
 
   function transitionIn() {
     if (transition.current) {
       clearTimeout(transition.current);
       transition.current = null;
     }
-    updateState({ shouldRender: true });
+    setShouldRender(true);
     setTimeout(() => {
-      updateState({ opacity: 1 });
+      setOpacity(1);
     }, delay);
   }
 
   function transitionOut() {
-    updateState({ opacity: 0 });
+    setOpacity(0);
     transition.current = setTimeout(() => {
-      updateState({ shouldRender: false });
+      setShouldRender(false);
     }, duration);
   }
 
-  if (!state.shouldRender) {
+  if (!shouldRender) {
     return null;
   }
 
@@ -57,7 +51,7 @@ const Transition = React.forwardRef(({ children, delay, duration, onIn, onOut, .
     ...children.props,
     ref,
     style: {
-      opacity: state.opacity,
+      opacity,
       transition: `opacity ${duration}ms ease-in-out`,
     },
   });

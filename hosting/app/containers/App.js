@@ -1,4 +1,3 @@
-import Dialog from 'components/Dialog';
 import ErrorBoundary from 'containers/ErrorBoundary';
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
@@ -14,7 +13,6 @@ const App = () => (
       <Route component={RoomRoute} path="/room/:roomId" />
       <Route component={NotFoundRoute} />
     </Switch>
-    <Dialog />
     <GlobalStyle />
   </ErrorBoundary>
 );

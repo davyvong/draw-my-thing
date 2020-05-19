@@ -2,21 +2,20 @@ import axios from 'axios';
 import get from 'lodash/get';
 import isFunction from 'lodash/isFunction';
 import merge from 'lodash/merge';
-import { useState } from 'react';
+import { useCallback, useReducer } from 'react';
+
+import reducer from './reducer';
 
 const useGraphQL = (initialState = {}) => {
-  const [state, setState] = useState({
+  const [state, dispatch] = useReducer(reducer, {
     data: {},
     error: null,
+    pending: false,
     ...initialState,
   });
 
-  const updateState = (updates = {}) => {
-    setState(prevState => ({ ...prevState, ...updates }));
-  };
-
-  const request = (options, successCallback, failureCallback) => {
-    updateState({ pending: true });
+  const request = useCallback((options, successCallback, failureCallback) => {
+    dispatch({ type: 'request' });
     const config = merge(
       {
         baseURL: process.env.BASE_URL,
@@ -36,47 +35,37 @@ const useGraphQL = (initialState = {}) => {
       })
       .catch(error => {
         const { message } = error;
-        let statusCode = 0;
         if (error.response) {
           const errors = get(error, 'response.data.errors', []);
           if (errors.length > 0) {
             return onRequestFailure(errors.shift(), failureCallback);
           }
-          statusCode = error.response.status;
-        } else if (error.request) {
-          statusCode = error.request.status;
         }
-        return onRequestFailure({ message, statusCode }, failureCallback);
+        return onRequestFailure({ message }, failureCallback);
       });
-  };
+  }, []);
 
-  const onRequestSuccess = (data, callback) => {
-    setTimeout(() => {
-      updateState({
-        data,
-        error: null,
-        pending: false,
-      });
-      if (isFunction(callback)) {
-        callback(data);
-      }
-    }, 1500);
+  const onRequestSuccess = useCallback((data, callback) => {
+    dispatch({
+      type: 'success',
+      data,
+    });
+    if (isFunction(callback)) {
+      callback(data);
+    }
     return data;
-  };
+  }, []);
 
-  const onRequestFailure = (data, callback) => {
-    setTimeout(() => {
-      const error = new Error(data.message);
-      updateState({
-        data: {},
-        error,
-        pending: false,
-      });
-      if (isFunction(callback)) {
-        callback(error);
-      }
-    }, 1500);
-  };
+  const onRequestFailure = useCallback((data, callback) => {
+    const error = new Error(data.message);
+    dispatch({
+      type: 'failure',
+      error,
+    });
+    if (isFunction(callback)) {
+      callback(error);
+    }
+  }, []);
 
   return [state, request];
 };

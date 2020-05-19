@@ -9,16 +9,16 @@ import { Popup } from './styled';
 const Popover = ({ anchor, children, open, ...props }) => {
   const child = useRef(null);
   const popper = useRef(null);
-  const [state, setState] = useState({ shouldRender: false });
+  const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
-    if (state.shouldRender) {
+    if (shouldRender) {
       document.addEventListener('mousedown', onClick, false);
     }
     return () => {
       document.removeEventListener('mousedown', onClick, false);
     };
-  }, [props.onClose, state.shouldRender]);
+  }, [props.onClose, shouldRender]);
 
   useEffect(() => {
     if (open) {
@@ -44,10 +44,6 @@ const Popover = ({ anchor, children, open, ...props }) => {
     });
   }
 
-  function updateState(updates = {}) {
-    setState(prevState => ({ ...prevState, ...updates }));
-  }
-
   function onClick(event) {
     if (anchor && !anchor.contains(event.target) && child.current && !child.current.contains(event.target)) {
       onClose();
@@ -56,15 +52,15 @@ const Popover = ({ anchor, children, open, ...props }) => {
 
   function onClose() {
     props.onClose();
-    updateState({ shouldRender: false });
+    setShouldRender(false);
   }
 
   function onOpen() {
-    updateState({ shouldRender: true });
+    setShouldRender(true);
   }
 
   return ReactDOM.createPortal(
-    <Transition in={anchor && state.shouldRender} onIn={updatePosition} ref={child}>
+    <Transition in={anchor && shouldRender} onIn={updatePosition} ref={child}>
       <Popup>{children}</Popup>
     </Transition>,
     document.body,

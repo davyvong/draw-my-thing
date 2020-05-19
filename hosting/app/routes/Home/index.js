@@ -1,19 +1,29 @@
 import Container from 'components/Container';
 import Subtitle from 'components/Typography/Subtitle';
 import Title from 'components/Typography/Title';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useReducer } from 'react';
+
+import { initialState } from './constants';
+import reducer from './reducer';
 
 const HomeRoute = () => {
-  const [name, setName] = useState('');
-  const [roomCode, setRoomCode] = useState('');
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const onChangeName = useCallback(event => {
-    setName(event.target.value);
+    dispatch({
+      type: 'setName',
+      data: event.target.value,
+    });
   }, []);
 
   const onChangeRoomCode = useCallback(event => {
-    setRoomCode(event.target.value);
+    dispatch({
+      type: 'setRoomCode',
+      data: event.target.value,
+    });
   }, []);
+
+  const { name, roomCode } = state;
 
   return (
     <Container>

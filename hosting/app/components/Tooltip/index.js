@@ -11,11 +11,7 @@ const Tooltip = ({ children, message, placement }) => {
   const anchor = useRef(null);
   const popper = useRef(null);
   const tooltip = useRef(null);
-  const [state, setState] = useState({ shouldRender: false });
-
-  function updateState(updates = {}) {
-    setState(prevState => ({ ...prevState, ...updates }));
-  }
+  const [shouldRender, setShouldRender] = useState(false);
 
   function updatePosition() {
     if (!anchor.current || !tooltip.current) {
@@ -36,11 +32,11 @@ const Tooltip = ({ children, message, placement }) => {
   }
 
   function onMouseEnter() {
-    updateState({ shouldRender: true });
+    setShouldRender(true);
   }
 
   function onMouseLeave() {
-    updateState({ shouldRender: false });
+    setShouldRender(false);
   }
 
   const hasMessage = isString(message) && message.length > 0;
@@ -56,7 +52,7 @@ const Tooltip = ({ children, message, placement }) => {
         ref: anchor,
       })}
       {ReactDOM.createPortal(
-        <Transition in={hasMessage && state.shouldRender} onIn={updatePosition} ref={tooltip}>
+        <Transition in={hasMessage && shouldRender} onIn={updatePosition} ref={tooltip}>
           <Popup>{message}</Popup>
         </Transition>,
         document.body,

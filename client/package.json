@@ -110,7 +110,7 @@
     "jest-cli": "24.9.0",
     "jest-styled-components": "6.3.3",
     "lint-staged": "9.4.2",
-    "minimist": "1.2.0",
+    "minimist": "1.2.3",
     "offline-plugin": "^5.0.7",
     "pre-commit": "1.2.2",
     "prettier": "1.18.2",

@@ -1,11 +1,13 @@
 import Input from 'components/Input';
 import Label from 'components/Label';
+import Loading from 'components/Loading';
 import Subtitle from 'components/Typography/Subtitle';
 import Title from 'components/Typography/Title';
 import useGraphQL from 'hooks/useGraphQL';
 import useProfile from 'hooks/useProfile';
 import React, { useCallback, useReducer } from 'react';
 import { useHistory } from 'react-router';
+import colors from 'styles/colors';
 
 import { initialState } from './constants';
 import messages from './messages';
@@ -16,7 +18,7 @@ import { Actions, Button, Container, ErrorMessage, Spacer } from './styled';
 const HomeRoute = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const profile = useProfile();
-  const [, request] = useGraphQL();
+  const [graphQL, request] = useGraphQL();
   const history = useHistory();
 
   const onBlurDisplayName = useCallback(() => {
@@ -111,13 +113,17 @@ const HomeRoute = () => {
       {displayNameError && <ErrorMessage>{displayNameError}</ErrorMessage>}
       <Actions>
         <Button disabled>Play</Button>
-        <Button onClick={createPrivateRoom}>Create Private Room</Button>
+        <Button disabled={graphQL.pending} onClick={createPrivateRoom}>
+          {graphQL.pending ? <Loading color={colors.white} /> : 'Create Private Room'}
+        </Button>
       </Actions>
       <Label>Room Code</Label>
       <Input onChange={onChangeRoomCode} placeholder="ABCDE" value={roomCode} />
       {roomCodeError && <ErrorMessage>{roomCodeError}</ErrorMessage>}
       <Actions>
-        <Button onClick={joinPrivateRoom}>Join Private Room</Button>
+        <Button disabled={graphQL.pending} onClick={joinPrivateRoom}>
+          {graphQL.pending ? <Loading color={colors.white} /> : 'Join Private Room'}
+        </Button>
       </Actions>
       <Spacer />
     </Container>

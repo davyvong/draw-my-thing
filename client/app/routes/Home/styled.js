@@ -11,6 +11,8 @@ const StyledActions = styled.div`
 `;
 
 const StyledButton = styled(Button)`
+  min-height: 38px;
+
   &:not(:first-child) {
     margin-left: 1rem;
   }

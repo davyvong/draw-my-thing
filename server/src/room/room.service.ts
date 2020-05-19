@@ -38,6 +38,6 @@ export class RoomService {
   }
 
   async join(accountId: string, code: string): Promise<Room> {
-    return this.roomModel.findByIdAndUpdate({ code }, { $addToSet: { players: accountId } }, { new: true });
+    return this.roomModel.findOneAndUpdate({ code }, { $addToSet: { players: accountId } }, { new: true });
   }
 }

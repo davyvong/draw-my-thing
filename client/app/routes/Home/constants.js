@@ -1,1 +1,5 @@
-export const initialState = {};
+export const initialState = {
+  displayNameError: null,
+  roomCode: '',
+  roomCodeError: null,
+};

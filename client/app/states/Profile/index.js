@@ -1,7 +1,9 @@
+import useGraphQL from 'hooks/useGraphQL';
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useReducer } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
 
 import { initialState } from './constants';
+import * as queries from './queries';
 import reducer from './reducer';
 
 const ProfileContext = React.createContext({});
@@ -10,12 +12,34 @@ export const ProfileConsumer = ProfileContext.Consumer;
 
 export const ProfileProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [, request] = useGraphQL();
 
   useEffect(() => {
-    dispatch({ type: 'rehydrate' });
+    if (localStorage.getItem('token')) {
+      dispatch({ type: 'rehydrate' });
+    } else {
+      signInAnonymously();
+    }
   }, []);
 
-  const value = useMemo(() => [state, dispatch], [state]);
+  const signInAnonymously = useCallback(() => {
+    request(
+      {
+        data: {
+          query: queries.signInAnonymously,
+          variables: { input: {} },
+        },
+      },
+      data => {
+        dispatch({
+          type: 'setToken',
+          data: data.signInAnonymously.token,
+        });
+      },
+    );
+  }, [state]);
+
+  const value = useMemo(() => ({ dispatch, signInAnonymously, state }), [state]);
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
 };

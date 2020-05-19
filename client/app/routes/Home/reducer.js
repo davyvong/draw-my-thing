@@ -3,12 +3,16 @@ import produce from 'immer';
 function reducer(state, action) {
   return produce(state, draft => {
     switch (action.type) {
-      case 'setName': {
-        draft.name = action.data;
+      case 'setDisplayNameError': {
+        draft.displayNameError = action.error;
         return draft;
       }
       case 'setRoomCode': {
         draft.roomCode = action.data;
+        return draft;
+      }
+      case 'setRoomCodeError': {
+        draft.roomCodeError = action.error;
         return draft;
       }
       default:

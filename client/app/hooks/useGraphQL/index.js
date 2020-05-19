@@ -16,9 +16,11 @@ const useGraphQL = (initialState = {}) => {
 
   const request = useCallback((options, successCallback, failureCallback) => {
     dispatch({ type: 'request' });
+    const token = localStorage.getItem('token');
     const config = merge(
       {
         baseURL: process.env.BASE_URL,
+        headers: token ? { authorization: `Bearer ${token}` } : {},
         method: 'post',
         url: '/graphql',
       },
@@ -28,7 +30,7 @@ const useGraphQL = (initialState = {}) => {
       .then(response => {
         const errors = get(response, 'data.errors', []);
         if (errors.length > 0) {
-          return onRequestFailure(errors.shift());
+          return onRequestFailure(errors.shift(), failureCallback);
         }
         const data = get(response, 'data.data', {}) || {};
         return onRequestSuccess(data, successCallback);

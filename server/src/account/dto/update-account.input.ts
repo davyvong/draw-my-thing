@@ -3,7 +3,7 @@ import { IsOptional } from 'class-validator';
 
 @InputType({ description: 'The `UpdateAccountInput` input type represents updated data for an existing account.' })
 export class UpdateAccountInput {
-  @Field()
+  @Field({ nullable: true })
   @IsOptional()
   readonly displayName: string;
 }

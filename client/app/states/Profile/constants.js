@@ -1,5 +1,4 @@
 export const initialState = {
-  id: null,
+  displayName: null,
   token: null,
-  username: null,
 };

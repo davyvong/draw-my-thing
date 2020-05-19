@@ -7,6 +7,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 
 import { LayoutProvider } from 'states/Layout';
+import { ProfileProvider } from 'states/Profile';
 
 import OfflinePluginRuntime from 'offline-plugin/runtime';
 
@@ -24,7 +25,9 @@ const render = () => {
     <HelmetProvider>
       <BrowserRouter>
         <LayoutProvider>
-          <App />
+          <ProfileProvider>
+            <App />
+          </ProfileProvider>
         </LayoutProvider>
       </BrowserRouter>
     </HelmetProvider>,

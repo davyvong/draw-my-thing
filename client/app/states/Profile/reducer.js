@@ -1,20 +1,33 @@
 import produce from 'immer';
 
-const localStorageKey = 'profile';
-
 function reducer(state, action) {
   return produce(state, draft => {
     switch (action.type) {
-      case 'setData': {
+      case 'setProfile': {
         Object.assign(draft, action.data);
-        const profileData = JSON.stringify(draft);
-        localStorage.setItem(localStorageKey, profileData);
+        const { token, ...profile } = draft;
+        localStorage.setItem('profile', JSON.stringify(profile));
+        return draft;
+      }
+      case 'setDisplayName': {
+        draft.displayName = action.data;
+        const { token, ...profile } = draft;
+        localStorage.setItem('profile', JSON.stringify(profile));
+        return draft;
+      }
+      case 'setToken': {
+        draft.token = action.data;
+        localStorage.setItem('token', action.data);
         return draft;
       }
       case 'rehydrate': {
-        const profileData = localStorage.getItem(localStorageKey);
-        const profileJson = JSON.parse(profileData);
-        return Object.assign(draft, profileJson);
+        const localProfile = localStorage.getItem('profile');
+        if (localProfile) {
+          const localProfileJson = JSON.parse(localProfile);
+          Object.assign(draft, localProfileJson);
+        }
+        draft.token = localStorage.getItem('token');
+        return draft;
       }
       default:
         return draft;

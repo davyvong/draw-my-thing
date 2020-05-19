@@ -12,7 +12,7 @@ type Account {
 The `CreateAccountInput` input type represents a new account to be created.
 """
 input CreateAccountInput {
-  displayName: String!
+  displayName: String
 }
 
 """The `Jst` object type represents an json web token."""
@@ -56,5 +56,5 @@ type Room {
 The `UpdateAccountInput` input type represents updated data for an existing account.
 """
 input UpdateAccountInput {
-  displayName: String!
+  displayName: String
 }

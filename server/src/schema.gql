@@ -2,6 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""The `Account` object type represents an account."""
+type Account {
+  displayName: String!
+  id: ID!
+}
+
+"""
+The `CreateAccountInput` input type represents a new account to be created.
+"""
+input CreateAccountInput {
+  displayName: String!
+}
+
 """The `Jst` object type represents an json web token."""
 type Jwt {
   exp: Float
@@ -9,6 +22,18 @@ type Jwt {
   token: String!
 }
 
+type Mutation {
+  updateAccount(data: UpdateAccountInput!): Account!
+  signInAnonymously(data: CreateAccountInput!): Jwt!
+}
+
 type Query {
-  createGuestAccount: Jwt!
+  findCurrentAccount: Account!
+}
+
+"""
+The `UpdateAccountInput` input type represents updated data for an existing account.
+"""
+input UpdateAccountInput {
+  displayName: String!
 }

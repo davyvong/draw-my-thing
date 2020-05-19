@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { AccountModule } from './account/account.module';
 import { AuthModule } from './auth/auth.module';
 import { formatError } from './common/graphql/formatError';
 
@@ -20,6 +21,7 @@ import { formatError } from './common/graphql/formatError';
       useNewUrlParser: true,
       useUnifiedTopology: true,
     }),
+    AccountModule,
     AuthModule,
   ],
 })

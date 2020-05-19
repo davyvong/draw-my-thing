@@ -1,7 +1,6 @@
 export class JwtPayload {
-  displayName: string;
   exp: number;
-  email: string;
+  hash: string;
   iat: number;
   id: string;
 }

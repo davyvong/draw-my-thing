@@ -1,16 +1,17 @@
-import { Query, Resolver } from '@nestjs/graphql';
-import uuidv4 from 'uuid/v4';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { CreateAccountInput } from 'src/account/dto/create-account.input';
+import { AccountService } from 'src/account/account.service';
 
 import { AuthService } from './auth.service';
 import { Jwt } from './models/jwt';
 
 @Resolver()
 export class AuthResolver {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly accountService: AccountService, private readonly authService: AuthService) {}
 
-  @Query(() => Jwt)
-  async createGuestAccount(): Promise<Jwt> {
-    const id = uuidv4();
-    return this.authService.signToken(id);
+  @Mutation(() => Jwt)
+  async signInAnonymously(@Args('data') createAccountInput: CreateAccountInput): Promise<Jwt> {
+    const account = await this.accountService.create(createAccountInput);
+    return this.authService.signToken(account.id);
   }
 }

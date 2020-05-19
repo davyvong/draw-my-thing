@@ -8,9 +8,9 @@
       }
     ],
     "predeploy": [
-      "npm --prefix ./hosting run lint",
-      "npm --prefix ./hosting run build"
+      "npm --prefix ./client run lint",
+      "npm --prefix ./client run build"
     ],
-    "public": "hosting/build"
+    "public": "client/build"
   }
 }

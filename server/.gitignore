@@ -1,0 +1,17 @@
+# Editors
+.vscode
+
+# Dependencies
+node_modules
+package-lock.json
+
+# Jest
+coverage
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Project
+dist

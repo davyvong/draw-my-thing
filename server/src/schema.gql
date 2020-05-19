@@ -1,0 +1,14 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""The `Jst` object type represents an json web token."""
+type Jwt {
+  exp: Float
+  iat: Float!
+  token: String!
+}
+
+type Query {
+  createGuestAccount: Jwt!
+}

@@ -58,7 +58,7 @@ const HomeRoute = () => {
       },
       data => {
         if (data.createRoom) {
-          history.push(`/rooms/${data.createRoom.code}`);
+          history.push(`/room/${data.createRoom.code}`);
         }
       },
     );
@@ -88,7 +88,7 @@ const HomeRoute = () => {
       },
       data => {
         if (data.joinRoom) {
-          history.push(`/rooms/${data.joinRoom.code}`);
+          history.push(`/room/${data.joinRoom.code}`);
         }
       },
       () => {

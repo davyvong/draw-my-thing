@@ -3,9 +3,9 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentAccount } from 'src/auth/decorators/current-account.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 
+import { AccountService } from './account.service';
 import { UpdateAccountInput } from './dto/update-account.input';
 import { Account } from './models/account.model';
-import { AccountService } from './account.service';
 
 @Resolver()
 export class AccountResolver {
@@ -19,7 +19,7 @@ export class AccountResolver {
 
   @Mutation(() => Account)
   @UseGuards(JwtAuthGuard)
-  async updateAccount(@CurrentAccount() account: Account, @Args('data') updateAccountInput: UpdateAccountInput): Promise<Account> {
-    return this.accountService.findByIdAndUpdate(account.id, updateAccountInput);
+  async updateAccount(@CurrentAccount() account: Account, @Args('input') input: UpdateAccountInput): Promise<Account> {
+    return this.accountService.findByIdAndUpdate(account.id, input);
   }
 }

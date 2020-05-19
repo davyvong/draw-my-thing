@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { AccountModule } from './account/account.module';
 import { AuthModule } from './auth/auth.module';
+import { RoomModule } from './room/room.module';
 import { formatError } from './common/graphql/formatError';
 
 @Module({
@@ -23,6 +24,7 @@ import { formatError } from './common/graphql/formatError';
     }),
     AccountModule,
     AuthModule,
+    RoomModule,
   ],
 })
 export class AppModule {}

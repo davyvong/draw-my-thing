@@ -1,7 +1,8 @@
+import Input from 'components/Input';
 import React, { useCallback, useEffect, useRef } from 'react';
 
 import Message from './components/Message';
-import { Input, Log, Wrapper } from './styled';
+import { Controls, Icon, Log, Title, Wrapper } from './styled';
 
 const messages = new Array(5).fill().map((_, index) => ({
   id: String(index),
@@ -30,8 +31,12 @@ const ChatPanel = () => {
 
   return (
     <Wrapper>
+      <Title>Chat</Title>
       <Log ref={logRef}>{messages.map(Message)}</Log>
-      <Input placeholder="Enter here" />
+      <Controls>
+        <Input placeholder="Enter here" />
+        <Icon>send</Icon>
+      </Controls>
     </Wrapper>
   );
 };

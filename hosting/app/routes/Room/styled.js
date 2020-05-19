@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 const StyledContainer = styled.div`
   flex: 1;
+  margin: 1.5rem 0;
 `;
 
 const StyledSubtitle = styled(Subtitle)`

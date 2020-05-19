@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Player from './components/Player';
-import { Wrapper } from './styled';
+import { Title, Wrapper } from './styled';
 
 const players = new Array(5).fill().map((_, index) => ({
   id: String(index),
@@ -9,6 +9,11 @@ const players = new Array(5).fill().map((_, index) => ({
   username: '$playerName',
 }));
 
-const PlayerPanel = () => <Wrapper>{players.map(Player)}</Wrapper>;
+const PlayerPanel = () => (
+  <Wrapper>
+    <Title>Players</Title>
+    {players.map(Player)}
+  </Wrapper>
+);
 
 export default PlayerPanel;

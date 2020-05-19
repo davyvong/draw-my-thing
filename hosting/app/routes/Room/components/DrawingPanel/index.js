@@ -53,7 +53,7 @@ class DrawingPanel extends React.PureComponent {
   onCanvasResize() {
     if (this.canvas.current) {
       const canvasOffset = this.canvas.current.getBoundingClientRect();
-      const width = window.innerWidth - canvasOffset.left - 300;
+      const width = window.innerWidth - canvasOffset.left - 348;
       const height = Math.floor(width / 1.6);
 
       this.imageHeight = Math.max(this.imageHeight, height);

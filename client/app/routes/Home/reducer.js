@@ -15,6 +15,14 @@ function reducer(state, action) {
         draft.roomCodeError = action.error;
         return draft;
       }
+      case 'setCreatingRoom': {
+        draft.creatingRoom = action.data;
+        return draft;
+      }
+      case 'setJoiningRoom': {
+        draft.joiningRoom = action.data;
+        return draft;
+      }
       default:
         return draft;
     }

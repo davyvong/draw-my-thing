@@ -42,6 +42,14 @@ const HomeRoute = () => {
     });
   }, []);
 
+  const onSubmitRoomCode = useCallback(
+    event => {
+      event.preventDefault();
+      joinPrivateRoom();
+    },
+    [history, profile.state.displayName, state],
+  );
+
   const createPrivateRoom = useCallback(() => {
     if (!displayName) {
       dispatch({
@@ -50,6 +58,10 @@ const HomeRoute = () => {
       });
       return;
     }
+    dispatch({
+      type: 'setCreatingRoom',
+      data: true,
+    });
     request(
       {
         data: {
@@ -61,8 +73,14 @@ const HomeRoute = () => {
           history.push(`/room/${data.createRoom.code}`);
         }
       },
+      () => {
+        dispatch({
+          type: 'setCreatingRoom',
+          data: false,
+        });
+      },
     );
-  }, []);
+  }, [history, state]);
 
   const joinPrivateRoom = useCallback(() => {
     if (!displayName) {
@@ -80,6 +98,10 @@ const HomeRoute = () => {
     if (!roomCode || !displayName) {
       return;
     }
+    dispatch({
+      type: 'setJoiningRoom',
+      data: true,
+    });
     request(
       {
         data: {
@@ -92,6 +114,10 @@ const HomeRoute = () => {
         }
       },
       () => {
+        dispatch({
+          type: 'setJoiningRoom',
+          data: false,
+        });
         dispatch({
           type: 'setRoomCodeError',
           error: messages.roomCodeNotFound,
@@ -114,15 +140,17 @@ const HomeRoute = () => {
       <Actions>
         <Button disabled>Play</Button>
         <Button disabled={graphQL.pending} onClick={createPrivateRoom}>
-          {graphQL.pending ? <Loading color={colors.white} /> : 'Create Private Room'}
+          {state.creatingRoom ? <Loading color={colors.white} /> : 'Create Private Room'}
         </Button>
       </Actions>
       <Label>Room Code</Label>
-      <Input onChange={onChangeRoomCode} placeholder="ABCDE" value={roomCode} />
+      <form onSubmit={onSubmitRoomCode}>
+        <Input onChange={onChangeRoomCode} placeholder="ABCDE" value={roomCode} />
+      </form>
       {roomCodeError && <ErrorMessage>{roomCodeError}</ErrorMessage>}
       <Actions>
         <Button disabled={graphQL.pending} onClick={joinPrivateRoom}>
-          {graphQL.pending ? <Loading color={colors.white} /> : 'Join Private Room'}
+          {state.joiningRoom ? <Loading color={colors.white} /> : 'Join Private Room'}
         </Button>
       </Actions>
       <Spacer />

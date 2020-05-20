@@ -1,9 +1,9 @@
 import { Schema } from 'mongoose';
 
 export const RoomSchema = new Schema({
-  chat: [{ type: Object }],
+  chat: [Object],
   code: String,
   createdBy: String,
   createdOn: Number,
-  players: [{ type: String }]
+  players: [Object]
 }, { versionKey: false });

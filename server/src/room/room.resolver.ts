@@ -14,7 +14,7 @@ export class RoomResolver {
   @Mutation(() => Room)
   @UseGuards(JwtAuthGuard)
   async createRoom(@CurrentAccount() account: Account): Promise<Room> {
-    return this.roomService.create(account.id);
+    return this.roomService.create(account);
   }
 
   @Query(() => Room)
@@ -26,6 +26,6 @@ export class RoomResolver {
   @Mutation(() => Room)
   @UseGuards(JwtAuthGuard)
   async joinRoom(@CurrentAccount() account: Account, @Args('code') code: string): Promise<Room> {
-    return this.roomService.join(account.id, code);
+    return this.roomService.join(account, code);
   }
 }

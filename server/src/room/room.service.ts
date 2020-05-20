@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import sha256 from 'crypto-js/sha256';
 import moment from 'moment';
+import { Account } from 'src/account/models/account.model';
 
 import { Room } from './models/room.model';
 
@@ -9,13 +10,16 @@ import { Room } from './models/room.model';
 export class RoomService {
   constructor(@InjectModel('Room') private readonly roomModel) {}
 
-  async create(accountId: string): Promise<Room> {
+  async create(account: Account): Promise<Room> {
     const room = {
       chat: [],
       code: await this.generateRoomCode(),
-      createdBy: accountId,
+      createdBy: account.id,
       createdOn: moment().unix(),
-      players: [accountId],
+      players: [{
+        displayName: account.displayName,
+        id: account.id,
+      }],
     };
     return this.roomModel.create(room);
   }
@@ -37,7 +41,11 @@ export class RoomService {
     return code;
   }
 
-  async join(accountId: string, code: string): Promise<Room> {
-    return this.roomModel.findOneAndUpdate({ code }, { $addToSet: { players: accountId } }, { new: true });
+  async join(account: Account, code: string): Promise<Room> {
+    const player = {
+      displayName: account.displayName,
+      id: account.id,
+    };
+    return this.roomModel.findOneAndUpdate({ code }, { $addToSet: { players: player } }, { new: true });
   }
 }

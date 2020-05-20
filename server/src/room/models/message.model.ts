@@ -6,11 +6,11 @@ export class Message {
   id: string
 
   @Field()
-  sentBy: string
-
-  @Field()
-  sentOn: number
+  sender: string
 
   @Field()
   text: string
+
+  @Field()
+  timestamp: number
 }

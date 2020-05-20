@@ -5,7 +5,7 @@ import Subtitle from 'components/Typography/Subtitle';
 import Title from 'components/Typography/Title';
 import useGraphQL from 'hooks/useGraphQL';
 import useProfile from 'hooks/useProfile';
-import React, { useCallback, useReducer } from 'react';
+import React, { useCallback, useMemo, useReducer } from 'react';
 import { useHistory } from 'react-router';
 import colors from 'styles/colors';
 
@@ -18,7 +18,7 @@ import { Actions, Button, Container, ErrorMessage, Spacer } from './styled';
 const HomeRoute = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const profile = useProfile();
-  const [graphQL, request] = useGraphQL();
+  const [, request] = useGraphQL();
   const history = useHistory();
 
   const onBlurDisplayName = useCallback(() => {
@@ -50,7 +50,7 @@ const HomeRoute = () => {
     [history, profile.state.displayName, state],
   );
 
-  const createPrivateRoom = useCallback(() => {
+  const createPrivateRoom = useCallback(async () => {
     if (!displayName) {
       dispatch({
         type: 'setDisplayNameError',
@@ -62,6 +62,7 @@ const HomeRoute = () => {
       type: 'setCreatingRoom',
       data: true,
     });
+    await profile.update();
     request(
       {
         data: {
@@ -80,9 +81,9 @@ const HomeRoute = () => {
         });
       },
     );
-  }, [history, state]);
+  }, [history, profile.state, state]);
 
-  const joinPrivateRoom = useCallback(() => {
+  const joinPrivateRoom = useCallback(async () => {
     if (!displayName) {
       dispatch({
         type: 'setDisplayNameError',
@@ -98,6 +99,7 @@ const HomeRoute = () => {
     if (!roomCode || !displayName) {
       return;
     }
+    await profile.update();
     dispatch({
       type: 'setJoiningRoom',
       data: true,
@@ -124,10 +126,12 @@ const HomeRoute = () => {
         });
       },
     );
-  }, [history, profile.state.displayName, state]);
+  }, [history, profile.state, state]);
 
   const { displayNameError, roomCode, roomCodeError } = state;
   const { displayName } = profile.state;
+
+  const pending = useMemo(() => state.creatingRoom || state.joiningRoom, [state.creatingRoom, state.joinPrivateRoom]);
 
   return (
     <Container>
@@ -139,7 +143,7 @@ const HomeRoute = () => {
       {displayNameError && <ErrorMessage>{displayNameError}</ErrorMessage>}
       <Actions>
         <Button disabled>Play</Button>
-        <Button disabled={graphQL.pending} onClick={createPrivateRoom}>
+        <Button disabled={pending} onClick={createPrivateRoom}>
           {state.creatingRoom ? <Loading color={colors.white} /> : 'Create Private Room'}
         </Button>
       </Actions>
@@ -149,7 +153,7 @@ const HomeRoute = () => {
       </form>
       {roomCodeError && <ErrorMessage>{roomCodeError}</ErrorMessage>}
       <Actions>
-        <Button disabled={graphQL.pending} onClick={joinPrivateRoom}>
+        <Button disabled={pending} onClick={joinPrivateRoom}>
           {state.joiningRoom ? <Loading color={colors.white} /> : 'Join Private Room'}
         </Button>
       </Actions>

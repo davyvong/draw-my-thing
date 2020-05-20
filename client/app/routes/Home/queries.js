@@ -5,15 +5,18 @@ export const createRoom = compressQuery(`
       createRoom {
         chat {
           id
+          sender
           text
-          sentBy
-          sentOn
+          timestamp
         }
         code
         createdBy
         createdOn
         id
-        players
+        players {
+          displayName
+          id
+        }
       }
     }
 `);
@@ -24,15 +27,18 @@ export const joinRoom = code =>
       joinRoom(code: "${code}") {
         chat {
           id
+          sender
           text
-          sentBy
-          sentOn
+          timestamp
         }
         code
         createdBy
         createdOn
         id
-        players
+        players {
+          displayName
+          id
+        }
       }
     }
 `);

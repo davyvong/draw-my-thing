@@ -4,7 +4,7 @@
 
 """The `Account` object type represents an account."""
 type Account {
-  displayName: String!
+  displayName: String
   id: ID!
 }
 
@@ -25,9 +25,9 @@ type Jwt {
 """The `Message` object type represents an chat message."""
 type Message {
   id: String!
-  sentBy: String!
-  sentOn: Float!
+  sender: String!
   text: String!
+  timestamp: Float!
 }
 
 type Mutation {
@@ -35,6 +35,12 @@ type Mutation {
   signInAnonymously(input: CreateAccountInput!): Jwt!
   createRoom: Room!
   joinRoom(code: String!): Room!
+}
+
+"""The `Player` object type represents an player."""
+type Player {
+  displayName: String
+  id: ID!
 }
 
 type Query {
@@ -49,7 +55,7 @@ type Room {
   createdBy: String!
   createdOn: Float!
   id: ID!
-  players: [String!]
+  players: [Player!]
 }
 
 """

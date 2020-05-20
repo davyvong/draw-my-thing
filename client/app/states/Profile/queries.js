@@ -9,3 +9,12 @@ export const signInAnonymously = compressQuery(`
     }
   }
 `);
+
+export const updateAccount = compressQuery(`
+  mutation ($input: UpdateAccountInput!) {
+    updateAccount (input: $input) {
+      displayName
+      id
+    }
+  }
+`);

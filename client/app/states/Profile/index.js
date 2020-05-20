@@ -39,7 +39,20 @@ export const ProfileProvider = ({ children }) => {
     );
   }, [state]);
 
-  const value = useMemo(() => ({ dispatch, signInAnonymously, state }), [state]);
+  const update = useCallback(() => {
+    request({
+      data: {
+        query: queries.updateAccount,
+        variables: {
+          input: {
+            displayName: state.displayName,
+          },
+        },
+      },
+    });
+  }, [state]);
+
+  const value = useMemo(() => ({ dispatch, signInAnonymously, state, update }), [state]);
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
 };

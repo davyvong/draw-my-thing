@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (hash !== payload.hash) {
       return done(new UnauthorizedException(), false);
     }
-    const account = this.accountService.findByPayload(payload);
+    const account = await this.accountService.findByPayload(payload);
     if (!account) {
       return done(new UnauthorizedException(), false);
     }

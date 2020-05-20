@@ -1,14 +1,9 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { ObjectType } from '@nestjs/graphql';
+import { Player } from 'src/room/models/player.model';
 
 @ObjectType({ description: 'The `Account` object type represents an account.' })
-export class Account {
-  createdOn: number
+export class Account extends Player {
+  createdOn?: number
 
-  @Field()
-  displayName: string
-
-  @Field(() => ID)
-  id: string
-
-  ip: string
+  ip?: string
 }

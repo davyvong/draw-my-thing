@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MongooseModule } from '@nestjs/mongoose';
+import GraphQLJSON from 'graphql-type-json';
 
 import { AccountModule } from './account/account.module';
 import { AuthModule } from './auth/auth.module';
-import { RoomModule } from './room/room.module';
 import { formatError } from './common/graphql/formatError';
+import { RoomModule } from './room/room.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { formatError } from './common/graphql/formatError';
       installSubscriptionHandlers: true,
       introspection: process.env.NODE_ENV === 'development',
       playground: process.env.NODE_ENV === 'development',
+      resolvers: { JSON: GraphQLJSON },
     }),
     MongooseModule.forRoot(process.env.MONGO_URI, {
       useFindAndModify: false,
@@ -27,4 +29,4 @@ import { formatError } from './common/graphql/formatError';
     RoomModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

@@ -15,6 +15,18 @@ input CreateAccountInput {
   displayName: String
 }
 
+"""The `Event` object type represents an real-time event."""
+type Event {
+  code: String!
+  data: JSON!
+  type: String!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
 """The `Jst` object type represents an json web token."""
 type Jwt {
   exp: Float
@@ -50,12 +62,16 @@ type Query {
 
 """The `Room` object type represents an room."""
 type Room {
-  chat: [Message!]
+  chat: [Message!]!
   code: String!
   createdBy: String!
   createdOn: Float!
   id: ID!
-  players: [Player!]
+  players: [Player!]!
+}
+
+type Subscription {
+  roomEvents: Event!
 }
 
 """

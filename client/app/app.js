@@ -1,22 +1,16 @@
-import 'react-app-polyfill/ie11';
-import 'react-app-polyfill/stable';
-
+import App from 'containers/App';
+import OfflinePluginRuntime from 'offline-plugin/runtime';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
-
 import { LayoutProvider } from 'states/Layout';
 import { ProfileProvider } from 'states/Profile';
 
-import OfflinePluginRuntime from 'offline-plugin/runtime';
-
-import App from 'containers/App';
-
-/* eslint-disable import/no-unresolved, import/extensions */
 import '!file-loader?name=[name].[ext]!./images/favicon.ico';
 import 'file-loader?name=.htaccess!./.htaccess';
-/* eslint-enable import/no-unresolved, import/extensions */
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
 
 const MOUNT_NODE = document.getElementById('app');
 

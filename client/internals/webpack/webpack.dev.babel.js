@@ -30,7 +30,8 @@ module.exports = require('./webpack.base.babel')({
       failOnError: false,
     }),
     new webpack.EnvironmentPlugin({
-      BASE_URL: 'http://localhost:5000/',
+      GRAPHQL_HTTP_URL: 'http://localhost:5000/graphql',
+      GRAPHQL_WS_URL: 'ws://localhost:5000/graphql',
       NODE_ENV: 'development',
     }),
   ],

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { PubSub } from 'graphql-subscriptions';
 import { AccountModule } from 'src/account/account.module';
 
 import { RoomResolver } from './room.resolver';
@@ -12,6 +13,13 @@ import { RoomSchema } from './schemas/room.schema';
     MongooseModule.forFeature([{ name: 'Room', schema: RoomSchema }]),
     AccountModule,
   ],
-  providers: [RoomResolver, RoomService],
+  providers: [
+    {
+      provide: 'PubSub',
+      useValue: new PubSub(),
+    },
+    RoomResolver,
+    RoomService,
+  ],
 })
 export class RoomModule {}

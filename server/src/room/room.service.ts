@@ -1,24 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import sha256 from 'crypto-js/sha256';
 import moment from 'moment';
-import { Account } from 'src/account/models/account.model';
 
+import { Player } from './models/player.model';
 import { Room } from './models/room.model';
 
 @Injectable()
 export class RoomService {
-  constructor(@InjectModel('Room') private readonly roomModel) {}
+  constructor(@InjectModel('Room') private readonly roomModel) { }
 
-  async create(account: Account): Promise<Room> {
+  async create(player: Player): Promise<Room> {
+    if (!player.id) {
+      throw new BadRequestException();
+    }
     const room = {
       chat: [],
       code: await this.generateRoomCode(),
-      createdBy: account.id,
+      createdBy: player.id,
       createdOn: moment().unix(),
       players: [{
-        displayName: account.displayName,
-        id: account.id,
+        displayName: player.displayName,
+        id: player.id,
       }],
     };
     return this.roomModel.create(room);
@@ -41,11 +44,17 @@ export class RoomService {
     return code;
   }
 
-  async join(account: Account, code: string): Promise<Room> {
-    const player = {
-      displayName: account.displayName,
-      id: account.id,
-    };
-    return this.roomModel.findOneAndUpdate({ code }, { $addToSet: { players: player } }, { new: true });
+  async join(player: Player, code: string): Promise<Room> {
+    if (!player.id) {
+      throw new BadRequestException();
+    }
+    return this.roomModel.findOneAndUpdate({ code }, {
+      $addToSet: {
+        players: {
+          displayName: player.displayName,
+          id: player.id,
+        }
+      }
+    }, { new: true });
   }
 }

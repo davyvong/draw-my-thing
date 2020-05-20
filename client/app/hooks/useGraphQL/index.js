@@ -19,10 +19,9 @@ const useGraphQL = (initialState = {}) => {
     const token = localStorage.getItem('token');
     const config = merge(
       {
-        baseURL: process.env.BASE_URL,
         headers: token ? { authorization: `Bearer ${token}` } : {},
         method: 'post',
-        url: '/graphql',
+        url: process.env.GRAPHQL_HTTP_URL,
       },
       options,
     );

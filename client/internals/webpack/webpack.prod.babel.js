@@ -121,7 +121,8 @@ module.exports = require('./webpack.base.babel')({
       hashDigestLength: 20,
     }),
     new webpack.EnvironmentPlugin({
-      BASE_URL: 'https://davyvong-portfolio.herokuapp.com/',
+      GRAPHQL_HTTP_URL: 'https://davyvong-dramything.herokuapp.com/graphql',
+      GRAPHQL_WS_URL: 'ws://davyvong-dramything.herokuapp.com/graphql',
       NODE_ENV: 'production',
     }),
     new CopyPlugin([{ from: 'app/robots.txt' }]),

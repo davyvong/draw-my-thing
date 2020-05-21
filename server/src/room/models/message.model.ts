@@ -5,12 +5,15 @@ export class Message {
   @Field()
   id: string
 
-  @Field()
+  @Field({ nullable: true })
   sender: string
 
-  @Field()
+  @Field({ nullable: true })
   text: string
 
   @Field()
   timestamp: number
+
+  @Field()
+  type: string
 }

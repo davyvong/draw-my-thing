@@ -4,13 +4,13 @@ import React from 'react';
 
 import { Avatar, Name, Points, Wrapper } from './styled';
 
-const Player = ({ avatar, color, id, points, username }) => (
+const Player = ({ avatar, color, displayName, id, points }) => (
   <Wrapper key={id}>
     <Avatar color={color} src={avatar}>
       <Icon>face</Icon>
     </Avatar>
     <div>
-      <Name>{username}</Name>
+      <Name>{displayName}</Name>
       {points !== undefined && <Points>{points} Points</Points>}
     </div>
   </Wrapper>
@@ -19,9 +19,9 @@ const Player = ({ avatar, color, id, points, username }) => (
 Player.propTypes = {
   avatar: PropTypes.string,
   color: PropTypes.string,
+  displayName: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   points: PropTypes.number,
-  username: PropTypes.string.isRequired,
 };
 
 export default Player;

@@ -1,8 +1,10 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import sha256 from 'crypto-js/sha256';
 import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 
+import { Message } from './models/message.model';
 import { Player } from './models/player.model';
 import { Room } from './models/room.model';
 
@@ -11,9 +13,6 @@ export class RoomService {
   constructor(@InjectModel('Room') private readonly roomModel) { }
 
   async create(player: Player): Promise<Room> {
-    if (!player.id) {
-      throw new BadRequestException();
-    }
     const room = {
       chat: [],
       code: await this.generateRoomCode(),
@@ -45,9 +44,6 @@ export class RoomService {
   }
 
   async join(player: Player, code: string): Promise<Room> {
-    if (!player.id) {
-      throw new BadRequestException();
-    }
     return this.roomModel.findOneAndUpdate({ code }, {
       $addToSet: {
         players: {
@@ -56,5 +52,17 @@ export class RoomService {
         }
       }
     }, { new: true });
+  }
+
+  async sendMessage(player: Player, code: string, text: string): Promise<Message> {
+    const message = {
+      id: uuidv4(),
+      sender: player.id,
+      timestamp: moment().unix(),
+      text,
+      type: 'player',
+    };
+    await this.roomModel.findOneAndUpdate({ code }, { $push: { chat: message } }, { new: true });
+    return message;
   }
 }

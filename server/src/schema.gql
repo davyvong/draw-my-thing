@@ -37,9 +37,10 @@ type Jwt {
 """The `Message` object type represents an chat message."""
 type Message {
   id: String!
-  sender: String!
-  text: String!
+  sender: String
+  text: String
   timestamp: Float!
+  type: String!
 }
 
 type Mutation {
@@ -47,6 +48,7 @@ type Mutation {
   signInAnonymously(input: CreateAccountInput!): Jwt!
   createRoom: Room!
   joinRoom(code: String!): Room!
+  sendMessage(message: String!, code: String!): Message!
 }
 
 """The `Player` object type represents an player."""

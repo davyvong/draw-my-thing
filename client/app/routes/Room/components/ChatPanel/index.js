@@ -1,21 +1,18 @@
 import Input from 'components/Input';
-import React, { useCallback, useEffect, useRef } from 'react';
+import get from 'lodash/get';
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import Message from './components/Message';
-import { Controls, Icon, Log, Title, Wrapper } from './styled';
+import { Form, Icon, Log, Title, Wrapper } from './styled';
 
-const messages = new Array(5).fill().map((_, index) => ({
-  id: String(index),
-  text: 'hi',
-  username: '$playerName',
-}));
-
-const ChatPanel = () => {
+const ChatPanel = ({ messages, players, sendMessage }) => {
   const logRef = useRef(null);
+  const [input, setInput] = useState('');
 
   useEffect(() => {
     scrollToBottom();
-  }, []);
+  }, [messages]);
 
   const scrollToBottom = useCallback(
     (options = {}) => {
@@ -29,16 +26,51 @@ const ChatPanel = () => {
     [logRef],
   );
 
+  const onChangeInput = useCallback(event => {
+    setInput(event.target.value);
+  }, []);
+
+  const submitMessage = useCallback(
+    async event => {
+      if (event) {
+        event.preventDefault();
+      }
+      if (input) {
+        sendMessage(input);
+        setInput('');
+      }
+    },
+    [input],
+  );
+
+  const renderMessage = useCallback(
+    message => {
+      const sender = get(players, message.sender, {});
+      return <Message {...message} sender={sender.displayName} />;
+    },
+    [messages],
+  );
+
   return (
     <Wrapper>
       <Title>Chat</Title>
-      <Log ref={logRef}>{messages.map(Message)}</Log>
-      <Controls>
-        <Input placeholder="Enter here" />
-        <Icon>send</Icon>
-      </Controls>
+      <Log ref={logRef}>{messages.map(renderMessage)}</Log>
+      <Form onSubmit={submitMessage}>
+        <Input onChange={onChangeInput} placeholder="Enter here" value={input} />
+        <Icon onClick={submitMessage}>send</Icon>
+      </Form>
     </Wrapper>
   );
+};
+
+ChatPanel.defaultProps = {
+  messages: [],
+};
+
+ChatPanel.propTypes = {
+  messages: PropTypes.array,
+  players: PropTypes.object,
+  sendMessage: PropTypes.func,
 };
 
 export default ChatPanel;

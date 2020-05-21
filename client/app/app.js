@@ -1,4 +1,5 @@
 import App from 'containers/App';
+import { enableMapSet } from 'immer';
 import OfflinePluginRuntime from 'offline-plugin/runtime';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -11,6 +12,8 @@ import '!file-loader?name=[name].[ext]!./images/favicon.ico';
 import 'file-loader?name=.htaccess!./.htaccess';
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
+
+enableMapSet();
 
 const MOUNT_NODE = document.getElementById('app');
 

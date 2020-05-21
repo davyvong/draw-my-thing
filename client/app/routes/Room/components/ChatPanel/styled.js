@@ -2,7 +2,7 @@ import Icon from 'components/Icon';
 import Subtitle from 'components/Typography/Subtitle';
 import styled from 'styled-components';
 
-const StyledControls = styled.div`
+const StyledForm = styled.form`
   align-items: center;
   display: flex;
   flex-direction: row;
@@ -33,7 +33,7 @@ const StyledWrapper = styled.div`
 `;
 
 export {
-  StyledControls as Controls,
+  StyledForm as Form,
   StyledIcon as Icon,
   StyledLog as Log,
   StyledTitle as Title,

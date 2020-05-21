@@ -1,7 +1,11 @@
 import compressQuery from 'utils/compressQuery';
 
 export const createRoom = compressQuery(`
-    mutation {
+    mutation ($input: UpdateAccountInput!) {
+      updateAccount (input: $input) {
+        displayName
+        id
+      }
       createRoom {
         chat {
           id
@@ -23,7 +27,11 @@ export const createRoom = compressQuery(`
 
 export const joinRoom = code =>
   compressQuery(`
-    mutation {
+    mutation ($input: UpdateAccountInput!) {
+      updateAccount (input: $input) {
+        displayName
+        id
+      }
       joinRoom(code: "${code}") {
         chat {
           id

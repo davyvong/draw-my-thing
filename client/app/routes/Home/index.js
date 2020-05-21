@@ -62,11 +62,15 @@ const HomeRoute = () => {
       type: 'setCreatingRoom',
       data: true,
     });
-    await profile.update();
     request(
       {
         data: {
           query: queries.createRoom,
+          variables: {
+            input: {
+              displayName: profile.state.displayName,
+            },
+          },
         },
       },
       data => {
@@ -99,7 +103,6 @@ const HomeRoute = () => {
     if (!roomCode || !displayName) {
       return;
     }
-    await profile.update();
     dispatch({
       type: 'setJoiningRoom',
       data: true,
@@ -108,6 +111,11 @@ const HomeRoute = () => {
       {
         data: {
           query: queries.joinRoom(roomCode),
+          variables: {
+            input: {
+              displayName: profile.state.displayName,
+            },
+          },
         },
       },
       data => {
@@ -144,7 +152,7 @@ const HomeRoute = () => {
       <Actions>
         <Button disabled>Play</Button>
         <Button disabled={pending} onClick={createPrivateRoom}>
-          {state.creatingRoom ? <Loading color={colors.white} /> : 'Create Private Room'}
+          {state.creatingRoom ? <Loading color={colors.white} size="0.5rem" /> : 'Create Private Room'}
         </Button>
       </Actions>
       <Label>Room Code</Label>
@@ -154,7 +162,7 @@ const HomeRoute = () => {
       {roomCodeError && <ErrorMessage>{roomCodeError}</ErrorMessage>}
       <Actions>
         <Button disabled={pending} onClick={joinPrivateRoom}>
-          {state.joiningRoom ? <Loading color={colors.white} /> : 'Join Private Room'}
+          {state.joiningRoom ? <Loading color={colors.white} size="0.5rem" /> : 'Join Private Room'}
         </Button>
       </Actions>
       <Spacer />

@@ -22,37 +22,26 @@ export const ProfileProvider = ({ children }) => {
     }
   }, []);
 
-  const signInAnonymously = useCallback(() => {
-    request(
-      {
-        data: {
-          query: queries.signInAnonymously,
-          variables: { input: {} },
-        },
-      },
-      data => {
-        dispatch({
-          type: 'setToken',
-          data: data.signInAnonymously.token,
-        });
-      },
-    );
-  }, [state]);
-
-  const update = useCallback(() => {
-    request({
-      data: {
-        query: queries.updateAccount,
-        variables: {
-          input: {
-            displayName: state.displayName,
+  const signInAnonymously = useCallback(
+    () =>
+      request(
+        {
+          data: {
+            query: queries.signInAnonymously,
+            variables: { input: {} },
           },
         },
-      },
-    });
-  }, [state]);
+        data => {
+          dispatch({
+            type: 'setToken',
+            data: data.signInAnonymously.token,
+          });
+        },
+      ),
+    [state],
+  );
 
-  const value = useMemo(() => ({ dispatch, signInAnonymously, state, update }), [state]);
+  const value = useMemo(() => ({ dispatch, signInAnonymously, state }), [state]);
 
   return <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>;
 };

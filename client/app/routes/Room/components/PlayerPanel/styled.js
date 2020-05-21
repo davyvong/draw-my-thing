@@ -11,7 +11,7 @@ const StyledWrapper = styled.div`
   flex-direction: column;
   overflow: auto;
   min-height: 100vh;
-  min-width: 260px;
+  min-width: 280px;
   padding: 1.5rem;
 `;
 

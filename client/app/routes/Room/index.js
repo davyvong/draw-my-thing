@@ -1,8 +1,9 @@
 import Title from 'components/Typography/Title';
 import useGraphQL from 'hooks/useGraphQL';
+import useProfile from 'hooks/useProfile';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 import ChatPanel from './components/ChatPanel';
@@ -14,12 +15,27 @@ import reducer from './reducer';
 import { Container, Subtitle, Wrapper } from './styled';
 
 const RoomRoute = ({ match }) => {
+  const drawingPanel = useRef();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [, request] = useGraphQL();
+  const profile = useProfile();
 
-  const secretWord = undefined;
+  const cannotDraw = useMemo(() => profile.state.id !== state.drawingPlayer, [state.drawingPlayer, state.gameStarted]);
 
-  const title = secretWord ? `Your secret word is $secretWord` : `$playerName is drawing`;
+  const drawingPlayerName = useMemo(() => get(state.playerObjs, state.drawingPlayer, {}).displayName, [
+    state.drawingPlayer,
+    state.playerObjs,
+  ]);
+
+  const title = useMemo(() => {
+    if (!state.gameStarted) {
+      return 'Draw My Thing';
+    }
+    if (cannotDraw) {
+      return `${drawingPlayerName} is drawing`;
+    }
+    return `Your secret word is ${state.secretWord}`;
+  }, [drawingPlayerName, cannotDraw, state.gameStarted, state.secretWord]);
 
   const code = useMemo(() => get(match, 'params.roomId'), [match]);
 
@@ -67,11 +83,11 @@ const RoomRoute = ({ match }) => {
 
   return (
     <Wrapper>
-      <PlayerPanel players={players} />
+      <PlayerPanel drawingPlayer={state.drawingPlayer} players={players} />
       <Container>
         <Title>{title}</Title>
         <Subtitle>Room Code: {code}</Subtitle>
-        <DrawingPanel />
+        <DrawingPanel disabled={cannotDraw} ref={drawingPanel} uploadLines={console.log} />
       </Container>
       <ChatPanel messages={state.chat} players={state.playerObjs} sendMessage={sendMessage} />
     </Wrapper>

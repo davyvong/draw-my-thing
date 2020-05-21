@@ -12,11 +12,16 @@ const StyledForm = styled.form`
 
 const StyledIcon = styled(Icon)`
   margin-left: 1rem;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const StyledLog = styled.div`
   flex: 1;
   overflow: auto;
+  position: relative;
 `;
 
 const StyledTitle = styled(Subtitle)`
@@ -27,6 +32,7 @@ const StyledTitle = styled(Subtitle)`
 const StyledWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 348px;
   min-height: 100vh;
   min-width: 348px;
   padding: 1.5rem;

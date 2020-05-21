@@ -4,14 +4,17 @@ import React from 'react';
 import Player from './components/Player';
 import { Title, Wrapper } from './styled';
 
-const PlayerPanel = ({ players }) => (
+const PlayerPanel = ({ drawingPlayer, players }) => (
   <Wrapper>
     <Title>Players</Title>
-    {players.map(Player)}
+    {players.map(player => (
+      <Player {...player} isDrawing={player.id === drawingPlayer} key={player.id} />
+    ))}
   </Wrapper>
 );
 
 PlayerPanel.propTypes = {
+  drawingPlayer: PropTypes.string,
   players: PropTypes.array,
 };
 

@@ -9,10 +9,14 @@ const StyledAvatar = styled.div`
   border-radius: 1.5rem;
   color: ${props => hexToLuma(props.color) > 200 ? colors.gray : colors.white};
   display: flex;
-  height: 2.5rem;
+  height: 2.25rem;
   justify-content: center;
   margin-right: 0.5rem;
-  width: 2.5rem;
+  width: 2.25rem;
+
+  & i {
+    font-size: 1.5rem;
+  }
 `;
 
 StyledAvatar.defaultProps = {

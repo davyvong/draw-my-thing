@@ -2,7 +2,14 @@ import styled from 'styled-components';
 import colors from 'styles/colors';
 import hexToRGB from 'utils/hexToRGB';
 
-const StyledText = styled.p``;
+const StyledText = styled.p`
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+`;
 
 const StyledUser = styled.p`
   color: ${props => props.color};

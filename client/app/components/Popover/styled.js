@@ -1,7 +1,5 @@
 import styled from 'styled-components';
-
 import colors from 'styles/colors';
-
 import hexToRGB from 'utils/hexToRGB';
 
 const StyledPopup = styled.div`

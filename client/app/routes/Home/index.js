@@ -74,9 +74,11 @@ const HomeRoute = () => {
         },
       },
       data => {
-        if (data.createRoom) {
-          history.push(`/room/${data.createRoom.code}`);
-        }
+        profile.dispatch({
+          type: 'setProfile',
+          data: data.updateAccount,
+        });
+        history.push(`/room/${data.createRoom.code}`);
       },
       () => {
         dispatch({
@@ -119,9 +121,11 @@ const HomeRoute = () => {
         },
       },
       data => {
-        if (data.joinRoom) {
-          history.push(`/room/${data.joinRoom.code}`);
-        }
+        profile.dispatch({
+          type: 'setProfile',
+          data: data.updateAccount,
+        });
+        history.push(`/room/${data.joinRoom.code}`);
       },
       () => {
         dispatch({

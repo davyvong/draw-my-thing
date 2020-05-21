@@ -1,13 +1,15 @@
 import styled from 'styled-components';
-import colors from 'styles/colors';
 
 const StyledCanvas = styled.canvas`
-  background-color: ${colors.gainsboro};
   border-radius: 0.25rem;
+
+  &:hover {
+    cursor: ${props => props.disabled ? 'auto': 'crosshair'};
+  }
 `;
 
 const StyledWrapper = styled.div`
-  display: block;
+  flex: 1;
 `;
 
 export {

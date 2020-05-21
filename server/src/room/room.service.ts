@@ -4,6 +4,7 @@ import sha256 from 'crypto-js/sha256';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 
+import { Line } from './models/line.model';
 import { Message } from './models/message.model';
 import { Player } from './models/player.model';
 import { Room } from './models/room.model';
@@ -18,6 +19,8 @@ export class RoomService {
       code: await this.generateRoomCode(),
       createdBy: player.id,
       createdOn: moment().unix(),
+      drawing: [],
+      gameStarted: false,
       players: [{
         displayName: player.displayName,
         id: player.id,
@@ -64,5 +67,10 @@ export class RoomService {
     };
     await this.roomModel.findOneAndUpdate({ code }, { $push: { chat: message } }, { new: true });
     return message;
+  }
+
+  async sendDrawing(code: string, lines: Line[]): Promise<Line[]> {
+    const room = await this.roomModel.findOneAndUpdate({ code }, { $push: { drawing: lines } }, { new: true });
+    return room.drawing;
   }
 }

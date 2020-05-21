@@ -34,6 +34,18 @@ type Jwt {
   token: String!
 }
 
+"""The `Line` object type represents a line on the canvas."""
+type Line {
+  start: Point!
+  stop: Point!
+}
+
+"""The `Line` object type represents a line on the canvas."""
+input LineInput {
+  start: PointInput!
+  stop: PointInput!
+}
+
 """The `Message` object type represents an chat message."""
 type Message {
   id: String!
@@ -49,12 +61,25 @@ type Mutation {
   createRoom: Room!
   joinRoom(code: String!): Room!
   sendMessage(message: String!, code: String!): Message!
+  sendDrawing(input: [LineInput!]!, code: String!): [Line!]!
 }
 
 """The `Player` object type represents an player."""
 type Player {
   displayName: String
   id: ID!
+}
+
+"""The `Point` object type represents a point on the canvas."""
+type Point {
+  offsetX: Float!
+  offsetY: Float!
+}
+
+"""The `Point` object type represents a point on the canvas."""
+input PointInput {
+  offsetX: Float!
+  offsetY: Float!
 }
 
 type Query {
@@ -68,8 +93,12 @@ type Room {
   code: String!
   createdBy: String!
   createdOn: Float!
+  drawing: [Line!]!
+  drawingPlayer: String
+  gameStarted: Boolean!
   id: ID!
   players: [Player!]!
+  secretWord: String
 }
 
 type Subscription {

@@ -61,7 +61,16 @@ const RoomRoute = ({ match }) => {
         query: queries.roomEvents,
         variables: { code },
       });
-      subscription.subscribe(event => dispatch(event.data.roomEvents));
+      subscription.subscribe(event => {
+        const { roomEvents } = event.data;
+        if (roomEvents.type === 'drawing') {
+          roomEvents.data.forEach(line => {
+            drawingPanel.current.drawLine(line.start, line.stop, '#EE92C2');
+          });
+        } else {
+          dispatch(roomEvents);
+        }
+      });
     });
     return () => {
       wsClient.unsubscribeAll();
@@ -78,7 +87,18 @@ const RoomRoute = ({ match }) => {
           query: queries.sendMessage({ code, message }),
         },
       }),
-    [],
+    [code],
+  );
+
+  const sendDrawing = useCallback(
+    async drawing =>
+      request({
+        data: {
+          query: queries.sendDrawing({ code }),
+          variables: { input: drawing },
+        },
+      }),
+    [code],
   );
 
   return (
@@ -87,7 +107,7 @@ const RoomRoute = ({ match }) => {
       <Container>
         <Title>{title}</Title>
         <Subtitle>Room Code: {code}</Subtitle>
-        <DrawingPanel disabled={cannotDraw} ref={drawingPanel} uploadLines={console.log} />
+        <DrawingPanel disabled={cannotDraw} ref={drawingPanel} uploadLines={sendDrawing} />
       </Container>
       <ChatPanel messages={state.chat} players={state.playerObjs} sendMessage={sendMessage} />
     </Wrapper>

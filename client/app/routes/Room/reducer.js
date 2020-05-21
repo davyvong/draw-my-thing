@@ -4,8 +4,8 @@ function reducer(state, action) {
   return produce(state, draft => {
     switch (action.type) {
       case 'foundRoom': {
-        Object.assign(draft, action.data);
-        const { players } = action.data;
+        const { players, ...data } = action.data;
+        Object.assign(draft, data);
         draft.playerObjs = players.reduce((objs, p) => {
           objs[p.id] = p;
           return objs;

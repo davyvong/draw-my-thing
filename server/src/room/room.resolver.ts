@@ -1,4 +1,4 @@
-import { Inject, UseGuards, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
 import get from 'lodash/get';
@@ -6,7 +6,9 @@ import { Account } from 'src/account/models/account.model';
 import { CurrentAccount } from 'src/auth/decorators/current-account.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 
+import { LineInput } from './dto/line.input';
 import { Event } from './models/event.model';
+import { Line } from './models/line.model';
 import { Message } from './models/message.model';
 import { Room } from './models/room.model';
 import { RoomService } from './room.service';
@@ -61,7 +63,7 @@ export class RoomResolver {
     };
     const message = await this.roomService.sendMessage(player, code, text);
     if (!message) {
-      throw new NotFoundException();
+      throw new BadRequestException();
     }
     this.pubSub.publish('roomEvents', {
       roomEvents: {
@@ -71,6 +73,24 @@ export class RoomResolver {
       },
     });
     return message;
+  }
+
+  @Mutation(() => [Line])
+  @UseGuards(JwtAuthGuard)
+  async sendDrawing(@CurrentAccount() account: Account, @Args('code') code: string, @Args('input', { type: () => [LineInput] }) lines: LineInput[]): Promise<Line[]> {
+    const room = await this.roomService.findByCode(code);
+    if (!room || room.drawingPlayer !== account.id) {
+      throw new BadRequestException();
+    }
+    await this.roomService.sendDrawing(code, lines);
+    this.pubSub.publish('roomEvents', {
+      roomEvents: {
+        code,
+        data: lines,
+        type: 'drawing',
+      },
+    });
+    return lines;
   }
 
   @Subscription(() => Event, {

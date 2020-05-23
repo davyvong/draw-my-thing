@@ -11,6 +11,13 @@ const StyledText = styled.p`
   hyphens: auto;
 `;
 
+const StyledTimestamp = styled.div`
+  font-size: 0.75rem;
+  position: absolute;
+  right: 1rem;
+  top: 0.672rem;
+`;
+
 const StyledUser = styled.p`
   color: ${props => props.color};
   font-size: 0.875rem;
@@ -21,8 +28,10 @@ StyledUser.defaultProps = {
 };
 
 const StyledWrapper = styled.div`
+  background-color: ${hexToRGB(colors.gray, 0.05)};
   border-radius: 0.25rem;
-  padding: 0.5rem 1rem;
+  padding: 0.672rem 1rem 0.5rem 1rem;
+  position: relative;
   transition: 150ms ease-in-out;
 
   &:hover {
@@ -32,10 +41,15 @@ const StyledWrapper = styled.div`
   &:active {
     background-color: ${hexToRGB(colors.gray, 0.3)};
   }
+
+  &:not(:last-child) {
+    margin-bottom: 1rem;
+  }
 `;
 
 export {
   StyledText as Text,
+  StyledTimestamp as Timestamp,
   StyledUser as User,
   StyledWrapper as Wrapper,
 };

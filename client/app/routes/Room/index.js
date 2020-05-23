@@ -1,4 +1,3 @@
-import Title from 'components/Typography/Title';
 import useGraphQL from 'hooks/useGraphQL';
 import useProfile from 'hooks/useProfile';
 import get from 'lodash/get';
@@ -12,7 +11,7 @@ import PlayerPanel from './components/PlayerPanel';
 import { initialState } from './constants';
 import * as queries from './queries';
 import reducer from './reducer';
-import { Container, Subtitle, Wrapper } from './styled';
+import { Container, Header, Subtitle, Title, Wrapper } from './styled';
 
 const RoomRoute = ({ match }) => {
   const drawingPanel = useRef();
@@ -103,10 +102,12 @@ const RoomRoute = ({ match }) => {
 
   return (
     <Wrapper>
-      <PlayerPanel drawingPlayer={state.drawingPlayer} players={players} />
       <Container>
-        <Title>{title}</Title>
-        <Subtitle>Room Code: {code}</Subtitle>
+        <Header>
+          <Title>{title}</Title>
+          <Subtitle>Room Code: {code}</Subtitle>
+        </Header>
+        <PlayerPanel drawingPlayer={state.drawingPlayer} players={players} />
         <DrawingPanel disabled={cannotDraw} ref={drawingPanel} uploadLines={sendDrawing} />
       </Container>
       <ChatPanel messages={state.chat} players={state.playerObjs} sendMessage={sendMessage} />

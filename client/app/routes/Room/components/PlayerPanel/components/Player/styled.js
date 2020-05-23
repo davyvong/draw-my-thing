@@ -25,16 +25,12 @@ StyledAvatar.defaultProps = {
 
 const StyledName = styled.div``;
 
-const StyledPoints = styled.div`
-  font-size: 0.875rem;
-`;
-
 const StyledWrapper = styled.div`
   align-items: center;
-  border-radius: 0.25rem;
+  border-radius: 1.5rem;
   display: flex;
   flex-direction: row;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
   transition: 150ms ease-in-out;
 
   &:hover {
@@ -49,6 +45,5 @@ const StyledWrapper = styled.div`
 export {
   StyledAvatar as Avatar,
   StyledName as Name,
-  StyledPoints as Points,
   StyledWrapper as Wrapper,
 };

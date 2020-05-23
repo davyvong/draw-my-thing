@@ -1,23 +1,23 @@
 import Icon from 'components/Icon';
+import Tooltip from 'components/Tooltip';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Avatar, Name, Points, Wrapper } from './styled';
+import { Avatar, Name, Wrapper } from './styled';
 
 const Player = ({ avatar, color, displayName, isDrawing, points }) => {
   if (!displayName) {
     return null;
   }
   return (
-    <Wrapper>
-      <Avatar color={color} src={avatar}>
-        <Icon>{isDrawing ? 'edit' : 'face'}</Icon>
-      </Avatar>
-      <div>
+    <Tooltip message={points !== undefined ? `${points} Points` : ''}>
+      <Wrapper>
+        <Avatar color={color} src={avatar}>
+          <Icon>{isDrawing ? 'edit' : 'face'}</Icon>
+        </Avatar>
         <Name>{displayName}</Name>
-        {points !== undefined && <Points>{points} Points</Points>}
-      </div>
-    </Wrapper>
+      </Wrapper>
+    </Tooltip>
   );
 };
 

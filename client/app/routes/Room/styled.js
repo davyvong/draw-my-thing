@@ -1,13 +1,31 @@
 import Subtitle from 'components/Typography/Subtitle';
+import Title from 'components/Typography/Title';
 import styled from 'styled-components';
 
 const StyledContainer = styled.div`
-  flex: 1;
+  flex: 0.65;
   margin: 1.5rem 0;
+  max-height: 100vh;
+  max-width: 1024px;
+  overflow: auto;
+`;
+
+const StyledHeader = styled.div`
+  align-item: flex-start;
+  display: flex;
+  flex-direction: row;
+  padding: 0 1.5rem;
 `;
 
 const StyledSubtitle = styled(Subtitle)`
-  margin-bottom: 1.5rem;
+  margin-bottom: 0rem;
+  text-align: right;
+`;
+
+const StyledTitle = styled(Title)`
+  flex: 1;
+  margin-bottom: 0rem;
+  text-align: left;
 `;
 
 const StyledWrapper = styled.div`
@@ -17,4 +35,10 @@ const StyledWrapper = styled.div`
   max-height: 100vh;
 `;
 
-export { StyledContainer as Container, StyledSubtitle as Subtitle, StyledWrapper as Wrapper };
+export {
+  StyledContainer as Container,
+  StyledHeader as Header,
+  StyledSubtitle as Subtitle,
+  StyledTitle as Title,
+  StyledWrapper as Wrapper,
+};

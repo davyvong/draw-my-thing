@@ -12,7 +12,7 @@ const StyledWrapper = styled.div`
   height: 2rem;
   justify-content: center;
   position: absolute;
-  right: calc(174px - 1rem);
+  right: calc(50% - 1rem);
   width: 2rem;
 
   &:hover {

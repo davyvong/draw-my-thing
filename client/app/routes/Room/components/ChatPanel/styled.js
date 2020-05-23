@@ -1,13 +1,14 @@
 import Icon from 'components/Icon';
-import Subtitle from 'components/Typography/Subtitle';
+import Title from 'components/Typography/Title';
 import styled from 'styled-components';
+import colors from 'styles/colors';
+import hexToRGB from 'utils/hexToRGB';
 
 const StyledForm = styled.form`
   align-items: center;
   display: flex;
   flex-direction: row;
   margin-top: 1.5rem;
-  padding-left: 1rem;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -24,18 +25,20 @@ const StyledLog = styled.div`
   position: relative;
 `;
 
-const StyledTitle = styled(Subtitle)`
-  margin: 0 1rem 0.5rem 1rem;
+const StyledTitle = styled(Title)`
+  margin: 0 1rem 1rem 0rem;
   text-align: left;
 `;
 
 const StyledWrapper = styled.div`
+  align-items: stretch;
+  border-left: 1px solid ${hexToRGB(colors.gray, 0.25, { useAlpha: false })};
   display: flex;
+  flex: 0.35;
   flex-direction: column;
-  max-width: 348px;
   min-height: 100vh;
-  min-width: 348px;
   padding: 1.5rem;
+  position: relative;
 `;
 
 export {

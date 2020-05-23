@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 import GraphQLJSON from 'graphql-type-json';
 
 import { AccountModule } from './account/account.module';
@@ -24,6 +25,7 @@ import { RoomModule } from './room/room.module';
       useNewUrlParser: true,
       useUnifiedTopology: true,
     }),
+    ScheduleModule.forRoot(),
     AccountModule,
     AuthModule,
     RoomModule,

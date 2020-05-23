@@ -41,6 +41,8 @@ export const joinRoom = code =>
           displayName
           id
         }
+        roundEndTime
+        roundStartTime
         secretWord
       }
     }

@@ -6,5 +6,7 @@ export const initialState = {
   gameStarted: false,
   playerIds: new Set(),
   playerObjs: {},
+  roundEndTime: null,
+  roundStartTime: null,
   secretWord: null,
 };

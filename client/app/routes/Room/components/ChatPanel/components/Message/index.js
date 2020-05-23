@@ -18,7 +18,7 @@ const Message = ({ id, sender, text, timestamp, type }) => {
     <Wrapper key={id}>
       <User>{sender}</User>
       <Text>{text}</Text>
-      <Timestamp>{moment(timestamp * 1000).fromNow()}</Timestamp>
+      <Timestamp>{moment.unix(timestamp).fromNow()}</Timestamp>
     </Wrapper>
   );
 };

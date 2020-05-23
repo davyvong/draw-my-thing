@@ -7,7 +7,10 @@ export const RoomSchema = new Schema({
   createdOn: Number,
   drawing: [Object],
   drawingPlayer: String,
+  drawingPlayerCursor: Number,
   gameStarted: Boolean,
   players: [Object],
+  roundEndTime: Number,
+  roundStartTime: Number,
   secretWord: String,
 }, { versionKey: false });

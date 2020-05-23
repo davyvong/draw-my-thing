@@ -24,6 +24,8 @@ export class Room {
   @Field({ nullable: true })
   drawingPlayer?: string
 
+  drawingPlayerCursor: number
+
   @Field({ defaultValue: false })
   gameStarted: boolean
 
@@ -32,6 +34,12 @@ export class Room {
 
   @Field(() => [Player], { defaultValue: [] })
   players?: Player[]
+
+  @Field({ nullable: true })
+  roundEndTime?: number
+
+  @Field({ nullable: true })
+  roundStartTime?: number
 
   @Field({ nullable: true })
   secretWord?: string

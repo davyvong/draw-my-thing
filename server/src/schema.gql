@@ -78,6 +78,7 @@ type Mutation {
   signInAnonymously(input: CreateAccountInput!): Jwt!
   createRoom: Room!
   joinRoom(code: String!): Room!
+  startGame(code: String!): Room!
   sendMessage(message: String!, code: String!): Message!
   sendDrawing(input: DrawingInput!, code: String!): Drawing!
 }
@@ -118,6 +119,8 @@ type Room {
   gameStarted: Boolean!
   id: ID!
   players: [Player!]!
+  roundEndTime: Float
+  roundStartTime: Float
   secretWord: String
 }
 

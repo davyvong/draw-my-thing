@@ -1,12 +1,10 @@
-import { BadRequestException, Inject, NotFoundException, UseGuards } from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
 import get from 'lodash/get';
-import moment from 'moment'
 import { Account } from 'src/account/models/account.model';
 import { CurrentAccount } from 'src/auth/decorators/current-account.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
-import { v4 as uuidv4 } from 'uuid';
 
 import { DrawingInput } from './dto/drawing.input';
 import { Drawing } from './models/drawing.model';
@@ -42,28 +40,17 @@ export class RoomResolver {
       displayName: account.displayName,
       id: account.id,
     };
-    const room = await this.roomService.join(player, code);
-    if (!room) {
-      throw new NotFoundException();
+    return this.roomService.join(player, code);
+  }
+
+  @Mutation(() => Room)
+  @UseGuards(JwtAuthGuard)
+  async startGame(@CurrentAccount() account: Account, @Args('code') code: string): Promise<Room> {
+    const room = await this.roomService.findByCode(code);
+    if (!room || account.id !== room.createdBy) {
+      throw new BadRequestException();
     }
-    this.pubSub.publish('roomEvents', {
-      roomEvents: {
-        code,
-        data: player,
-        type: 'joinedRoom',
-      },
-    });
-    if (account.displayName) {
-      const systemMessage = await this.roomService.sendSystemMessage(code, `${account.displayName} has joined the room.`);
-      this.pubSub.publish('roomEvents', {
-        roomEvents: {
-          code,
-          data: systemMessage,
-          type: 'message',
-        },
-      });
-    }
-    return room;
+    return this.roomService.startGame(code);
   }
 
   @Mutation(() => Message)
@@ -73,36 +60,20 @@ export class RoomResolver {
       displayName: account.displayName,
       id: account.id,
     };
-    const message = await this.roomService.sendMessage(player, code, text);
-    if (!message) {
-      throw new BadRequestException();
-    }
-    this.pubSub.publish('roomEvents', {
-      roomEvents: {
-        code,
-        data: message,
-        type: 'message',
-      },
-    });
-    return message;
+    return this.roomService.sendMessage(player, code, text);
   }
 
   @Mutation(() => Drawing)
   @UseGuards(JwtAuthGuard)
   async sendDrawing(@CurrentAccount() account: Account, @Args('code') code: string, @Args('input') input: DrawingInput): Promise<Drawing> {
     const room = await this.roomService.findByCode(code);
-    if (!room || room.drawingPlayer !== account.id) {
-      throw new BadRequestException();
+    if (!room) {
+      throw new NotFoundException();
     }
-    await this.roomService.sendDrawing(code, input);
-    this.pubSub.publish('roomEvents', {
-      roomEvents: {
-        code,
-        data: input,
-        type: 'drawing',
-      },
-    });
-    return input;
+    if (room.drawingPlayer !== account.id) {
+      throw new UnauthorizedException();
+    }
+    return this.roomService.sendDrawing(code, input);
   }
 
   @Subscription(() => Event, {
@@ -111,6 +82,18 @@ export class RoomResolver {
       const payloadCode = get(payload, 'roomEvents.code');
       return connectionCode && connectionCode === payloadCode;
     },
+    resolve: (payload, args, context) => {
+      const connectionId = get(context, 'connection.variables.id');
+      const payloadDrawerId = get(payload, 'roomEvents.drawingPlayer', connectionId);
+      if (connectionId !== payloadDrawerId) {
+        payload.secretWord = null;
+        return {
+          ...payload,
+          secretWord: null,
+        };
+      }
+      return payload;
+    }
   })
   roomEvents() {
     return this.pubSub.asyncIterator('roomEvents');

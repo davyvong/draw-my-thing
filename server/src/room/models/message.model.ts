@@ -6,10 +6,10 @@ export class Message {
   id: string
 
   @Field({ nullable: true })
-  sender: string
+  sender?: string
 
   @Field({ nullable: true })
-  text: string
+  text?: string
 
   @Field()
   timestamp: number

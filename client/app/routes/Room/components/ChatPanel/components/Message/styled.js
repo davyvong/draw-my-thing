@@ -2,6 +2,21 @@ import styled from 'styled-components';
 import colors from 'styles/colors';
 import hexToRGB from 'utils/hexToRGB';
 
+const StyledSystem = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction:row;
+  font-size: 0.875rem;
+
+  & i {
+    margin-right: 1rem;
+  }
+  
+  &:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+`;
+
 const StyledText = styled.p`
   -ms-word-break: break-all;
   word-break: break-all;
@@ -48,6 +63,7 @@ const StyledWrapper = styled.div`
 `;
 
 export {
+  StyledSystem as System,
   StyledText as Text,
   StyledTimestamp as Timestamp,
   StyledUser as User,

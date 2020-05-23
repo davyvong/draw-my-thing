@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
-import { Line } from './line.model';
+import { Drawing } from './drawing.model';
 import { Message } from './message.model';
 import { Player } from './player.model';
 
@@ -18,8 +18,8 @@ export class Room {
   @Field()
   createdOn: number
 
-  @Field(() => [Line], { defaultValue: [] })
-  drawing?: Line[]
+  @Field(() => [Drawing], { defaultValue: [] })
+  drawing?: Drawing[]
 
   @Field({ nullable: true })
   drawingPlayer?: string

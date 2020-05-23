@@ -3,7 +3,7 @@ import produce from 'immer';
 function reducer(state, action) {
   return produce(state, draft => {
     switch (action.type) {
-      case 'foundRoom': {
+      case 'joinRoom': {
         const { players, ...data } = action.data;
         Object.assign(draft, data);
         draft.playerObjs = players.reduce((objs, p) => {

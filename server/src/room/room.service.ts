@@ -4,7 +4,7 @@ import sha256 from 'crypto-js/sha256';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Line } from './models/line.model';
+import { Drawing } from './models/drawing.model';
 import { Message } from './models/message.model';
 import { Player } from './models/player.model';
 import { Room } from './models/room.model';
@@ -57,6 +57,17 @@ export class RoomService {
     }, { new: true });
   }
 
+  async sendSystemMessage(code: string, text: string): Promise<Message> {
+    const message = {
+      id: uuidv4(),
+      timestamp: moment().unix(),
+      text,
+      type: 'system',
+    };
+    await this.roomModel.findOneAndUpdate({ code }, { $push: { chat: message } }, { new: true });
+    return message;
+  }
+
   async sendMessage(player: Player, code: string, text: string): Promise<Message> {
     const message = {
       id: uuidv4(),
@@ -69,8 +80,11 @@ export class RoomService {
     return message;
   }
 
-  async sendDrawing(code: string, lines: Line[]): Promise<Line[]> {
-    const room = await this.roomModel.findOneAndUpdate({ code }, { $push: { drawing: lines } }, { new: true });
-    return room.drawing;
+  async sendDrawing(code: string, drawing: Drawing): Promise<Drawing> {
+    const room = await this.roomModel.findOneAndUpdate({ code }, { $push: { drawing } }, { new: true });
+    if (room) {
+      return drawing;
+    }
+    return null;
   }
 }

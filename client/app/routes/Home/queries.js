@@ -7,20 +7,7 @@ export const createRoom = compressQuery(`
         id
       }
       createRoom {
-        chat {
-          id
-          sender
-          text
-          timestamp
-        }
-        code
-        createdBy
-        createdOn
         id
-        players {
-          displayName
-          id
-        }
       }
     }
 `);
@@ -33,20 +20,7 @@ export const joinRoom = code =>
         id
       }
       joinRoom(code: "${code}") {
-        chat {
-          id
-          sender
-          text
-          timestamp
-        }
-        code
-        createdBy
-        createdOn
         id
-        players {
-          displayName
-          id
-        }
       }
     }
 `);

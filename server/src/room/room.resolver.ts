@@ -2,13 +2,15 @@ import { BadRequestException, Inject, NotFoundException, UseGuards } from '@nest
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
 import get from 'lodash/get';
+import moment from 'moment'
 import { Account } from 'src/account/models/account.model';
 import { CurrentAccount } from 'src/auth/decorators/current-account.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { v4 as uuidv4 } from 'uuid';
 
-import { LineInput } from './dto/line.input';
+import { DrawingInput } from './dto/drawing.input';
+import { Drawing } from './models/drawing.model';
 import { Event } from './models/event.model';
-import { Line } from './models/line.model';
 import { Message } from './models/message.model';
 import { Room } from './models/room.model';
 import { RoomService } from './room.service';
@@ -51,6 +53,16 @@ export class RoomResolver {
         type: 'joinedRoom',
       },
     });
+    if (account.displayName) {
+      const systemMessage = await this.roomService.sendSystemMessage(code, `${account.displayName} has joined the room.`);
+      this.pubSub.publish('roomEvents', {
+        roomEvents: {
+          code,
+          data: systemMessage,
+          type: 'message',
+        },
+      });
+    }
     return room;
   }
 
@@ -75,22 +87,22 @@ export class RoomResolver {
     return message;
   }
 
-  @Mutation(() => [Line])
+  @Mutation(() => Drawing)
   @UseGuards(JwtAuthGuard)
-  async sendDrawing(@CurrentAccount() account: Account, @Args('code') code: string, @Args('input', { type: () => [LineInput] }) lines: LineInput[]): Promise<Line[]> {
+  async sendDrawing(@CurrentAccount() account: Account, @Args('code') code: string, @Args('input') input: DrawingInput): Promise<Drawing> {
     const room = await this.roomService.findByCode(code);
     if (!room || room.drawingPlayer !== account.id) {
       throw new BadRequestException();
     }
-    await this.roomService.sendDrawing(code, lines);
+    await this.roomService.sendDrawing(code, input);
     this.pubSub.publish('roomEvents', {
       roomEvents: {
         code,
-        data: lines,
+        data: input,
         type: 'drawing',
       },
     });
-    return lines;
+    return input;
   }
 
   @Subscription(() => Event, {

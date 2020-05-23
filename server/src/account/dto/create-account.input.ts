@@ -6,4 +6,12 @@ export class CreateAccountInput {
   @Field({ nullable: true })
   @IsOptional()
   readonly displayName: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  readonly strokeColor?: string
+
+  @Field({ nullable: true })
+  @IsOptional()
+  readonly strokeWidth?: number
 }

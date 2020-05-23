@@ -91,7 +91,7 @@ class DrawingPanel extends React.PureComponent {
         stop: { offsetX, offsetY },
       };
       this.linesToUpload = this.linesToUpload.concat(lineData);
-      this.drawLine(lineData.start, lineData.stop, this.props.strokeStyle);
+      this.drawLine(lineData.start, lineData.stop, this.props.strokeColor);
     }
   }
 
@@ -100,9 +100,12 @@ class DrawingPanel extends React.PureComponent {
     this.uploadLines();
   }
 
-  drawLine(startOffset, stopOffset, strokeStyle) {
+  drawLine(startOffset, stopOffset, strokeColor, strokeWidth) {
     this.ctx.beginPath();
-    this.ctx.strokeStyle = strokeStyle;
+    this.ctx.strokeStyle = strokeColor || this.props.strokeColor;
+    this.ctx.lineJoin = 'round';
+    this.ctx.lineCap = 'round';
+    this.ctx.lineWidth = strokeWidth || this.props.strokeWidth;
     this.ctx.moveTo(startOffset.offsetX, startOffset.offsetY);
     this.ctx.lineTo(stopOffset.offsetX, stopOffset.offsetY);
     this.ctx.stroke();
@@ -113,7 +116,12 @@ class DrawingPanel extends React.PureComponent {
     if (this.linesToUpload.length > 0) {
       const lineData = this.linesToUpload;
       this.linesToUpload = [];
-      this.props.uploadLines(lineData);
+      const { strokeColor, strokeWidth } = this.props;
+      this.props.uploadLines({
+        lines: lineData,
+        strokeColor,
+        strokeWidth,
+      });
     }
   }
 
@@ -138,12 +146,14 @@ class DrawingPanel extends React.PureComponent {
 
 DrawingPanel.defaultProps = {
   disabled: true,
-  strokeStyle: '#EE92C2',
+  strokeColor: '#EE92C2',
+  strokeWidth: 5,
 };
 
 DrawingPanel.propTypes = {
   disabled: PropTypes.bool,
-  strokeStyle: PropTypes.string,
+  strokeColor: PropTypes.string,
+  strokeWidth: PropTypes.number,
   uploadLines: PropTypes.func.isRequired,
 };
 

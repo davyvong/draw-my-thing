@@ -7,4 +7,10 @@ export class Player {
 
   @Field(() => ID)
   id: string
+
+  @Field({ nullable: true })
+  strokeColor?: string
+
+  @Field({ nullable: true })
+  strokeWidth?: number
 }

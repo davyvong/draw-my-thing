@@ -6,6 +6,8 @@
 type Account {
   displayName: String
   id: ID!
+  strokeColor: String
+  strokeWidth: Float
 }
 
 """
@@ -13,6 +15,22 @@ The `CreateAccountInput` input type represents a new account to be created.
 """
 input CreateAccountInput {
   displayName: String
+  strokeColor: String
+  strokeWidth: Float
+}
+
+"""The `Line` object type represents a line on the canvas."""
+type Drawing {
+  lines: [Line!]!
+  strokeColor: String!
+  strokeWidth: Float!
+}
+
+"""The `Line` object type represents a line on the canvas."""
+input DrawingInput {
+  lines: [LineInput!]!
+  strokeColor: String!
+  strokeWidth: Float!
 }
 
 """The `Event` object type represents an real-time event."""
@@ -61,13 +79,15 @@ type Mutation {
   createRoom: Room!
   joinRoom(code: String!): Room!
   sendMessage(message: String!, code: String!): Message!
-  sendDrawing(input: [LineInput!]!, code: String!): [Line!]!
+  sendDrawing(input: DrawingInput!, code: String!): Drawing!
 }
 
 """The `Player` object type represents an player."""
 type Player {
   displayName: String
   id: ID!
+  strokeColor: String
+  strokeWidth: Float
 }
 
 """The `Point` object type represents a point on the canvas."""
@@ -93,7 +113,7 @@ type Room {
   code: String!
   createdBy: String!
   createdOn: Float!
-  drawing: [Line!]!
+  drawing: [Drawing!]!
   drawingPlayer: String
   gameStarted: Boolean!
   id: ID!
@@ -110,4 +130,6 @@ The `UpdateAccountInput` input type represents updated data for an existing acco
 """
 input UpdateAccountInput {
   displayName: String
+  strokeColor: String
+  strokeWidth: Float
 }

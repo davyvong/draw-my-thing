@@ -42,13 +42,18 @@ const RoomRoute = ({ match }) => {
     request(
       {
         data: {
-          query: queries.findRoom(code),
+          query: queries.joinRoom(code),
+          variables: {
+            input: {
+              displayName: profile.state.displayName,
+            },
+          },
         },
       },
       data => {
         dispatch({
-          type: 'foundRoom',
-          data: data.findRoom,
+          type: 'joinRoom',
+          data: data.joinRoom,
         });
       },
     );
@@ -63,8 +68,9 @@ const RoomRoute = ({ match }) => {
       subscription.subscribe(event => {
         const { roomEvents } = event.data;
         if (roomEvents.type === 'drawing') {
-          roomEvents.data.forEach(line => {
-            drawingPanel.current.drawLine(line.start, line.stop, '#EE92C2');
+          const { lines, strokeColor, strokeWidth } = roomEvents.data;
+          lines.forEach(line => {
+            drawingPanel.current.drawLine(line.start, line.stop, strokeColor, strokeWidth);
           });
         } else {
           dispatch(roomEvents);

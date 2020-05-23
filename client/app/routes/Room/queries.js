@@ -1,27 +1,38 @@
 import compressQuery from 'utils/compressQuery';
 
-export const findRoom = code =>
+export const joinRoom = code =>
   compressQuery(`
-    query {
-      findRoom(code: "${code}") {
+    mutation ($input: UpdateAccountInput!) {
+      updateAccount (input: $input) {
+        displayName
+        id
+        strokeColor
+        strokeWidth
+      }
+      joinRoom(code: "${code}") {
         chat {
           id
           sender
           text
           timestamp
+          type
         }
         code
         createdBy
         createdOn
         drawing {
-          start {
-            offsetX
-            offsetY
+          lines {
+            start {
+              offsetX
+              offsetY
+            }
+            start {
+              offsetX
+              offsetY
+            }
           }
-          start {
-            offsetX
-            offsetY
-          }
+          strokeColor
+          strokeWidth
         }
         drawingPlayer
         gameStarted
@@ -50,16 +61,20 @@ export const sendMessage = ({ code, message }) =>
 
 export const sendDrawing = ({ code }) =>
   compressQuery(`
-    mutation ($input: [LineInput!]!) {
+    mutation ($input: DrawingInput!) {
       sendDrawing(code: "${code}", input: $input) {
-        start {
-          offsetX
-          offsetY
+        lines {
+          start {
+            offsetX
+            offsetY
+          }
+          stop {
+            offsetX
+            offsetY
+          }
         }
-        stop {
-          offsetX
-          offsetY
-        }
+        strokeColor
+        strokeWidth
       }
     }
 `);

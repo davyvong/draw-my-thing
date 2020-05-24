@@ -11,6 +11,16 @@ const StyledCanvas = styled.canvas`
   }
 `;
 
+const StyledControls = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-top: 0.5rem;
+  
+  & *:not(:first-child) {
+    margin-left: 1rem;
+  }
+`;
+
 const StyledWrapper = styled.div`
   flex: 1;
   margin: 0 1.5rem;
@@ -20,5 +30,6 @@ const StyledWrapper = styled.div`
 
 export {
   StyledCanvas as Canvas,
+  StyledControls as Controls,
   StyledWrapper as Wrapper,
 };

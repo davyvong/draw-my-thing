@@ -20,6 +20,18 @@ function reducer(state, action) {
         localStorage.setItem('token', action.data);
         return draft;
       }
+      case 'setStrokeColor': {
+        draft.strokeColor = action.data;
+        const { token, ...profile } = draft;
+        localStorage.setItem('profile', JSON.stringify(profile));
+        return draft;
+      }
+      case 'setStrokeWidth': {
+        draft.strokeWidth = action.data;
+        const { token, ...profile } = draft;
+        localStorage.setItem('profile', JSON.stringify(profile));
+        return draft;
+      }
       case 'rehydrate': {
         const localProfile = localStorage.getItem('profile');
         if (localProfile) {

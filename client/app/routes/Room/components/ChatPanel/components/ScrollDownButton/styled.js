@@ -13,10 +13,14 @@ const StyledWrapper = styled.div`
   justify-content: center;
   position: absolute;
   right: calc(50% - 1rem);
+  transition: 150ms ease-in-out;
   width: 2rem;
 
   &:hover {
     cursor: pointer;
+    height: 2.5rem;
+    right: calc(50% - 1.25rem);
+    width: 2.5rem;
   }
 `;
 

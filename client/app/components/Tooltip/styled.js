@@ -5,7 +5,7 @@ import colors from 'styles/colors';
 import hexToRGB from 'utils/hexToRGB';
 
 const StyledPopup = styled.div`
-  background-color: ${hexToRGB(colors.black, 0.5)};
+  background-color: ${hexToRGB(colors.black, 0.5, { useAlpha: false })};
   border-radius: 0.25rem;
   color: ${colors.white};
   font-family: 'Google Sans', sans-serif;

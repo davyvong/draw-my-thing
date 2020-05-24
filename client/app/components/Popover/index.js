@@ -23,6 +23,8 @@ const Popover = ({ anchor, children, open, ...props }) => {
   useEffect(() => {
     if (open) {
       onOpen();
+    } else {
+      onClose();
     }
   }, [open]);
 

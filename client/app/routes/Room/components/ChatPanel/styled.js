@@ -1,4 +1,4 @@
-import Icon from 'components/Icon';
+import Input from 'components/Input';
 import Title from 'components/Typography/Title';
 import styled from 'styled-components';
 import colors from 'styles/colors';
@@ -11,13 +11,16 @@ const StyledForm = styled.form`
   margin-top: 1.5rem;
 `;
 
-const StyledIcon = styled(Icon)`
-  margin-left: 1rem;
-
-  &:hover {
-    cursor: pointer;
-  }
+const StyledHeader = styled.div`
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 1rem;
 `;
+
+const StyledInput = styled(Input)`
+  margin-right: 0.5rem;
+`
 
 const StyledLog = styled.div`
   flex: 1;
@@ -26,7 +29,7 @@ const StyledLog = styled.div`
 `;
 
 const StyledTitle = styled(Title)`
-  margin: 0 1rem 1rem 0rem;
+  flex: 1;
   text-align: left;
 `;
 
@@ -43,7 +46,8 @@ const StyledWrapper = styled.div`
 
 export {
   StyledForm as Form,
-  StyledIcon as Icon,
+  StyledHeader as Header,
+  StyledInput as Input,
   StyledLog as Log,
   StyledTitle as Title,
   StyledWrapper as Wrapper,

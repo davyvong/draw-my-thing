@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import colors from 'styles/colors';
 
-import { Canvas, Wrapper } from './styled';
+import ColorPicker from './components/ColorPicker';
+import WidthPicker from './components/WidthPicker';
+import { Canvas, Controls, Wrapper } from './styled';
 
 class DrawingPanel extends React.PureComponent {
   constructor(props) {
@@ -57,7 +59,7 @@ class DrawingPanel extends React.PureComponent {
     if (this.canvas.current) {
       const canvasOffset = this.canvas.current.getBoundingClientRect();
       const width = Math.min(Math.floor(window.innerWidth - canvasOffset.left * 5 - 2) * 0.65, 976);
-      const height = Math.floor(width / 1.6);
+      const height = Math.floor(width * 0.5625 + 16);
 
       this.imageHeight = Math.max(this.imageHeight, height);
       this.imageWidth = Math.max(this.imageWidth, width);
@@ -126,7 +128,7 @@ class DrawingPanel extends React.PureComponent {
   }
 
   render() {
-    const { disabled } = this.props;
+    const { disabled, strokeColor, strokeWidth, updateStrokeColor, updateStrokeWidth } = this.props;
     const { visible } = this.state;
     return (
       <Wrapper>
@@ -139,6 +141,10 @@ class DrawingPanel extends React.PureComponent {
           ref={this.canvas}
           style={visible ? { backgroundColor: colors.gainsboro } : {}}
         />
+        <Controls>
+          <ColorPicker onSelect={updateStrokeColor} value={strokeColor} />
+          <WidthPicker onSelect={updateStrokeWidth} value={strokeWidth} />
+        </Controls>
       </Wrapper>
     );
   }
@@ -154,6 +160,8 @@ DrawingPanel.propTypes = {
   disabled: PropTypes.bool,
   strokeColor: PropTypes.string,
   strokeWidth: PropTypes.number,
+  updateStrokeColor: PropTypes.func.isRequired,
+  updateStrokeWidth: PropTypes.func.isRequired,
   uploadLines: PropTypes.func.isRequired,
 };
 

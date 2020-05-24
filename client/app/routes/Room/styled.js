@@ -14,6 +14,7 @@ const StyledHeader = styled.div`
   align-item: flex-start;
   display: flex;
   flex-direction: row;
+  margin-bottom: 1.5rem;
   padding: 0 1.5rem;
 `;
 

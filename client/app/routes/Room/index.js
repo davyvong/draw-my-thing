@@ -7,7 +7,6 @@ import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 import ChatPanel from './components/ChatPanel';
 import DrawingPanel from './components/DrawingPanel';
-import PlayerPanel from './components/PlayerPanel';
 import { initialState } from './constants';
 import * as queries from './queries';
 import reducer from './reducer';
@@ -19,7 +18,11 @@ const RoomRoute = ({ match }) => {
   const [, request] = useGraphQL();
   const profile = useProfile();
 
-  const cannotDraw = useMemo(() => profile.state.id !== state.drawingPlayer, [state.drawingPlayer, state.gameStarted]);
+  const cannotDraw = useMemo(() => profile.state.id !== state.drawingPlayer, [
+    profile.state,
+    state.drawingPlayer,
+    state.gameStarted,
+  ]);
 
   const drawingPlayerName = useMemo(() => get(state.playerObjs, state.drawingPlayer, {}).displayName, [
     state.drawingPlayer,
@@ -83,8 +86,6 @@ const RoomRoute = ({ match }) => {
     };
   }, [code]);
 
-  const players = useMemo(() => Object.values(state.playerObjs), [state]);
-
   const sendMessage = useCallback(
     async message =>
       request({
@@ -106,6 +107,30 @@ const RoomRoute = ({ match }) => {
     [code],
   );
 
+  const updateStrokeColor = useCallback(async color => {
+    profile.dispatch({
+      type: 'setStrokeColor',
+      data: color,
+    });
+    // return request({
+    //   data: {
+    //     query: queries.updateStrokeColor(color),
+    //   },
+    // });
+  }, []);
+
+  const updateStrokeWidth = useCallback(async width => {
+    profile.dispatch({
+      type: 'setStrokeWidth',
+      data: width,
+    });
+    // return request({
+    //   data: {
+    //     query: queries.updateStrokeWidth(width),
+    //   },
+    // });
+  }, []);
+
   return (
     <Wrapper>
       <Container>
@@ -113,10 +138,22 @@ const RoomRoute = ({ match }) => {
           <Title>{title}</Title>
           <Subtitle>Room Code: {code}</Subtitle>
         </Header>
-        <PlayerPanel drawingPlayer={state.drawingPlayer} players={players} />
-        <DrawingPanel disabled={cannotDraw} ref={drawingPanel} uploadLines={sendDrawing} />
+        <DrawingPanel
+          disabled={cannotDraw}
+          ref={drawingPanel}
+          strokeColor={profile.state.strokeColor}
+          strokeWidth={profile.state.strokeWidth}
+          updateStrokeColor={updateStrokeColor}
+          updateStrokeWidth={updateStrokeWidth}
+          uploadLines={sendDrawing}
+        />
       </Container>
-      <ChatPanel messages={state.chat} players={state.playerObjs} sendMessage={sendMessage} />
+      <ChatPanel
+        drawingPlayer={state.drawingPlayer}
+        messages={state.chat}
+        players={state.playerObjs}
+        sendMessage={sendMessage}
+      />
     </Wrapper>
   );
 };

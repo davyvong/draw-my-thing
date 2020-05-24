@@ -88,11 +88,11 @@ export class RoomResolver {
       if (connectionId !== payloadDrawerId) {
         payload.secretWord = null;
         return {
-          ...payload,
+          ...payload.roomEvents,
           secretWord: null,
         };
       }
-      return payload;
+      return payload.roomEvents;
     }
   })
   roomEvents() {

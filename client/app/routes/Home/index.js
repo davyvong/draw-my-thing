@@ -1,6 +1,6 @@
 import Input from 'components/Input';
-import Label from 'components/Label';
 import Loading from 'components/Loading';
+import Label from 'components/Typography/Label';
 import Subtitle from 'components/Typography/Subtitle';
 import Title from 'components/Typography/Title';
 import useGraphQL from 'hooks/useGraphQL';

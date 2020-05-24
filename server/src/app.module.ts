@@ -19,6 +19,7 @@ import { RoomModule } from './room/room.module';
       introspection: process.env.NODE_ENV === 'development',
       playground: process.env.NODE_ENV === 'development',
       resolvers: { JSON: GraphQLJSON },
+      subscriptions: { keepAlive: 5000 }
     }),
     MongooseModule.forRoot(process.env.MONGO_URI, {
       useFindAndModify: false,

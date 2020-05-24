@@ -27,10 +27,12 @@ const StyledName = styled.div``;
 
 const StyledWrapper = styled.div`
   align-items: center;
-  border-radius: 1.5rem;
+  border-radius: 0.25rem;
   display: flex;
   flex-direction: row;
-  padding: 0.5rem 1rem 0.5rem 0.5rem;
+  max-width: 500px;
+  min-width: 200px;
+  padding: 0.5rem;
   transition: 150ms ease-in-out;
 
   &:hover {

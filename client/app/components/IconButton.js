@@ -9,11 +9,12 @@ const IconButton = styled.button`
   border-radius: 50%;
   color: ${({ color }) => color || colors.gray};
   display: flex;
-  height: 2rem;
+  height: 2.5rem;
   justify-content: center;
   padding: 0;
   transition: 150ms ease-in-out;
-  width: 2rem;
+  min-width: 2.5rem;
+  width: 2.5rem;
 
   &:disabled {
     opacity: 0.5;

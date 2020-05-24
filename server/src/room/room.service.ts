@@ -61,7 +61,7 @@ export class RoomService {
     if (index > -1) {
       const playerData = room.players[index];
       if (playerData.displayName) {
-        this.sendSystemMessage(code, `${player.displayName} has re-joined the room.`);
+        this.sendSystemMessage(code, `${player.displayName} has rejoined the room.`);
         return room;
       }
     }

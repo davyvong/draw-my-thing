@@ -1,6 +1,6 @@
 import App from 'containers/App';
 import { enableMapSet } from 'immer';
-import OfflinePluginRuntime from 'offline-plugin/runtime';
+import runtime from 'offline-plugin/runtime';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -42,5 +42,12 @@ if (module.hot) {
 render();
 
 if (process.env.NODE_ENV === 'production') {
-  OfflinePluginRuntime.install();
+  runtime.install({
+    onUpdateReady: () => {
+      runtime.applyUpdate();
+    },
+    onUpdated: () => {
+      window.location.reload();
+    },
+  });
 }

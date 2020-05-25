@@ -77,17 +77,9 @@ module.exports = require('./webpack.base.babel')({
       inject: true,
     }),
     new OfflinePlugin({
-      appShell: '/',
-      autoUpdate: true,
-      caches: {
-        main: [':rest:'],
-        additional: ['*.chunk.js'],
+      ServiceWorker: {
+        events: true,
       },
-      excludes: ['.htaccess'],
-      publicPath: '/',
-      relativePaths: false,
-      safeToUseOptionalCaches: true,
-      updateStrategy: 'all',
     }),
     new CompressionPlugin({
       algorithm: 'gzip',
@@ -121,8 +113,8 @@ module.exports = require('./webpack.base.babel')({
       hashDigestLength: 20,
     }),
     new webpack.EnvironmentPlugin({
-      GRAPHQL_HTTP_URL: 'https://davyvong-dramything.herokuapp.com/graphql',
-      GRAPHQL_WS_URL: 'ws://davyvong-dramything.herokuapp.com/graphql',
+      GRAPHQL_HTTP_URL: 'https://davyvong-drawmything.herokuapp.com/graphql',
+      GRAPHQL_WS_URL: 'ws://davyvong-drawmything.herokuapp.com/graphql',
       NODE_ENV: 'production',
     }),
     new CopyPlugin([{ from: 'app/robots.txt' }]),

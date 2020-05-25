@@ -215,7 +215,7 @@ class DrawingPanel extends React.PureComponent {
 DrawingPanel.defaultProps = {
   disabled: true,
   gameStarted: false,
-  strokeColor: '#EE92C2',
+  strokeColor: '#f44336',
   strokeWidth: 5,
   tool: 'pen',
 };

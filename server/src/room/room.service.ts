@@ -119,7 +119,12 @@ export class RoomService {
   }
 
   async startNextRound(code: string): Promise<void> {
-    console.log(moment().toISOString(), code);
+    console.log(code, moment().toISOString());
+    const previousTimeout = this.schedulerRegistry.getTimeout(`room.${code}.nextRound`);
+    if (previousTimeout) {
+      clearTimeout(previousTimeout);
+      this.schedulerRegistry.deleteTimeout(`room.${code}.nextRound`);
+    }
     const room = await this.findByCode(code);
     if (!room) {
       throw new NotFoundException();
@@ -167,6 +172,19 @@ export class RoomService {
   }
 
   async sendMessage(player: Player, code: string, text: string): Promise<Message> {
+    const room = await this.findByCode(code);
+    if (!room) {
+      throw new NotFoundException();
+    }
+    if (room.secretWord === text) {
+      const message = await this.sendSystemMessage(code, `${player.displayName} has guessed the secret word.`);
+      this.pubSub.publish('roomEvents', {
+        code,
+        data: message,
+        type: 'message',
+      })
+      return message;
+    }
     const message = {
       id: uuidv4(),
       sender: player.id,
@@ -174,10 +192,7 @@ export class RoomService {
       text,
       type: 'player',
     };
-    const room = await this.roomModel.findOneAndUpdate({ code }, { $push: { chat: message } }, { new: true });
-    if (!room) {
-      throw new NotFoundException();
-    }
+    this.roomModel.findOneAndUpdate({ code }, { $push: { chat: message } }, { new: true })
     this.pubSub.publish('roomEvents', {
       roomEvents: {
         code,

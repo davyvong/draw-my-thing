@@ -13,7 +13,7 @@ const ColorPicker = ({ disabled, onSelect, value }) => {
     <React.Fragment>
       <Button disabled={disabled} onClick={() => setOpen(true)} ref={ref}>
         <Preview color={value} />
-        {value}
+        {String(value).toUpperCase()}
       </Button>
       <Popover anchor={ref.current} open={open} onClose={() => setOpen(false)}>
         <Picker>

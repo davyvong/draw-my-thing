@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useMemo, useReducer, useRef } from 'reac
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 import ChatPanel from './components/ChatPanel';
+import CountdownTimer from './components/CountdownTimer';
 import DrawingPanel from './components/DrawingPanel';
 import { initialState } from './constants';
 import * as queries from './queries';
@@ -36,7 +37,7 @@ const RoomRoute = ({ match }) => {
     if (cannotDraw) {
       return `${drawingPlayerName} is drawing`;
     }
-    return `Your secret word is ${state.secretWord}`;
+    return `Your secret word is ${state.secretWord}.`;
   }, [drawingPlayerName, cannotDraw, state.gameStarted, state.secretWord]);
 
   const code = useMemo(() => get(match, 'params.roomId'), [match]);
@@ -88,7 +89,7 @@ const RoomRoute = ({ match }) => {
           }
           case 'gameStart':
           case 'roundStart': {
-            drawingPanel.clearCanvas();
+            drawingPanel.current.clearCanvas();
             dispatch(roomEvents);
             break;
           }
@@ -160,8 +161,11 @@ const RoomRoute = ({ match }) => {
     <Wrapper>
       <Container>
         <Header>
-          <Title>{title}</Title>
-          <Subtitle>Room Code: {code}</Subtitle>
+          <Title>
+            {title}
+            <Subtitle>Room Code: {code}</Subtitle>
+          </Title>
+          <CountdownTimer endTime={state.roundEndTime} startTime={state.roundStartTime} />
         </Header>
         <DrawingPanel
           disabled={cannotDraw}

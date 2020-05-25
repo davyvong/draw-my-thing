@@ -20,7 +20,7 @@ const StyledHeader = styled.div`
 
 const StyledSubtitle = styled(Subtitle)`
   margin-bottom: 0rem;
-  text-align: right;
+  text-align: left;
 `;
 
 const StyledTitle = styled(Title)`

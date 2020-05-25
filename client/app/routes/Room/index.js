@@ -21,11 +21,7 @@ const RoomRoute = ({ match }) => {
   const profile = useProfile();
   const [profileModal, setProfileModal] = useState(false);
 
-  const cannotDraw = useMemo(() => profile.state.id !== state.drawingPlayer, [
-    profile.state,
-    state.drawingPlayer,
-    state.gameStarted,
-  ]);
+  const cannotDraw = useMemo(() => profile.state.id !== state.drawingPlayer, [profile.state, state]);
 
   const drawingPlayerName = useMemo(() => get(state.playerObjs, state.drawingPlayer, {}).displayName, [
     state.drawingPlayer,
@@ -44,26 +40,58 @@ const RoomRoute = ({ match }) => {
 
   const code = useMemo(() => get(match, 'params.roomId'), [match]);
 
+  const dispatchJoinRoom = data => {
+    dispatch({
+      type: 'joinRoom',
+      data: data.joinRoom,
+    });
+    profile.dispatch({
+      type: 'setProfile',
+      data: {
+        id: data.updateAccount.id,
+      },
+    });
+    if (drawingPanel.current) {
+      drawingPanel.current.clearCanvas();
+      const { drawing } = data.joinRoom;
+      drawing.forEach(draw => {
+        const { canvasHeight, canvasWidth, lines, strokeColor, strokeWidth, tool } = draw;
+        lines.forEach(line => {
+          drawingPanel.current.drawLine({
+            startOffset: line.start,
+            stopOffset: line.stop,
+            strokeColor,
+            strokeWidth,
+            canvasHeight,
+            canvasWidth,
+            tool,
+          });
+        });
+      });
+    }
+  };
+
   useEffect(() => {
-    setProfileModal(Boolean(!profile.state.displayName));
-    request(
-      {
-        data: {
-          query: queries.joinRoom(code),
-          variables: {
-            input: {
-              displayName: profile.state.displayName,
+    if (profile.state.displayName) {
+      request(
+        {
+          data: {
+            query: queries.joinRoom(code),
+            variables: {
+              input: {
+                displayName: profile.state.displayName,
+              },
             },
           },
         },
-      },
-      data => {
-        dispatch({
-          type: 'joinRoom',
-          data: data.joinRoom,
-        });
-      },
-    );
+        dispatchJoinRoom,
+      );
+    } else {
+      setProfileModal(true);
+    }
+  }, [code, profile.state.token]);
+
+  useEffect(() => {
     const wsClient = new SubscriptionClient(process.env.GRAPHQL_WS_URL, {
       reconnect: true,
     });
@@ -109,26 +137,21 @@ const RoomRoute = ({ match }) => {
   }, [code, drawingPanel]);
 
   const setProfile = useCallback(
-    () =>
+    displayName =>
       request(
         {
           data: {
             query: queries.joinRoom(code),
             variables: {
               input: {
-                displayName: profile.state.displayName,
+                displayName,
               },
             },
           },
         },
-        data => {
-          dispatch({
-            type: 'joinRoom',
-            data: data.joinRoom,
-          });
-        },
+        dispatchJoinRoom,
       ),
-    [code, profile.state],
+    [code],
   );
 
   const sendMessage = useCallback(

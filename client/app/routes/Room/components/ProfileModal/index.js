@@ -32,7 +32,7 @@ const ProfileModal = ({ code, onClose, open, ...props }) => {
       event.preventDefault();
     }
     if (profile.state.displayName) {
-      props.onSubmit();
+      props.onSubmit(profile.state.displayName);
       onClose();
     } else {
       setError(messages.invalidDisplayName);

@@ -86,9 +86,9 @@ class DrawingPanel extends React.PureComponent {
     }
   }
 
-  onMouseDown({ nativeEvent, preventDefault }) {
+  onMouseDown({ nativeEvent }) {
     if (this.props.disabled) {
-      preventDefault();
+      return;
     }
     const { offsetX, offsetY } = nativeEvent;
     this.isDrawing = true;
@@ -200,12 +200,14 @@ class DrawingPanel extends React.PureComponent {
         <StartGameOverlay onStart={startGame} roomCreator={roomCreator} visible={!gameStarted} />
         <Canvas
           disabled={disabled}
+          height={565}
           onMouseDown={this.onMouseDown}
           onMouseLeave={this.onMouseUp}
           onMouseMove={this.onMouseMove}
           onMouseUp={this.onMouseUp}
           ref={this.canvas}
           style={visible ? canvasStyle : {}}
+          width={976}
         />
         <canvas ref={this.bufferCanvas} style={{ display: 'none' }}></canvas>
         <Controls>

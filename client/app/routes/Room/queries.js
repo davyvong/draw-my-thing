@@ -21,18 +21,21 @@ export const joinRoom = code =>
         createdBy
         createdOn
         drawing {
+          canvasHeight
+          canvasWidth
           lines {
             start {
               offsetX
               offsetY
             }
-            start {
+            stop {
               offsetX
               offsetY
             }
           }
           strokeColor
           strokeWidth
+          tool
         }
         drawingPlayer
         gameStarted

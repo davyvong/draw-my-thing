@@ -2185,6 +2185,6 @@ const wordBank = [
 ];
 
 export function randomWord() {
-  const index = Math.random() * wordBank.length;
+  const index = Math.ceil(Math.random() * wordBank.length);
   return wordBank[index];
 }

@@ -25,12 +25,12 @@ export class RoomResolver {
 
   @Query(() => Room)
   @UseGuards(JwtAuthGuard)
-  async findRoom(@Args('code') code: string): Promise<Room> {
+  async findRoom(@CurrentAccount() account: Account, @Args('code') code: string): Promise<Room> {
     const room = await this.roomService.findByCode(code);
     if (!room) {
       throw new NotFoundException();
     }
-    return room;
+    return account.id === room.createdBy ? room : { ...room, secretWord : null };
   }
 
   @Mutation(() => Room)
@@ -40,17 +40,19 @@ export class RoomResolver {
       displayName: account.displayName,
       id: account.id,
     };
-    return this.roomService.join(player, code);
+    const room = await this.roomService.join(player, code);
+    return account.id === room.createdBy ? room : { ...room, secretWord : null };
   }
 
   @Mutation(() => Room)
   @UseGuards(JwtAuthGuard)
   async startGame(@CurrentAccount() account: Account, @Args('code') code: string): Promise<Room> {
-    const room = await this.roomService.findByCode(code);
+    let room = await this.roomService.findByCode(code);
     if (!room || account.id !== room.createdBy) {
       throw new BadRequestException();
     }
-    return this.roomService.startGame(code);
+    room = await this.roomService.startGame(code);
+    return account.id === room.createdBy ? room : { ...room, secretWord : null };
   }
 
   @Mutation(() => Message)
@@ -83,14 +85,15 @@ export class RoomResolver {
       return connectionCode && connectionCode === payloadCode;
     },
     resolve: (payload, args, context) => {
-      const connectionId = get(context, 'connection.variables.id');
-      const payloadDrawerId = get(payload, 'roomEvents.drawingPlayer', connectionId);
-      if (connectionId !== payloadDrawerId) {
-        payload.secretWord = null;
-        return {
-          ...payload.roomEvents,
-          secretWord: null,
-        };
+      if (payload.roomEvents.type === 'roundStart') {
+        const connectionId = get(context, 'connection.variables.id');
+        const payloadDrawerId = get(payload, 'roomEvents.drawingPlayer', connectionId);
+        if (connectionId !== payloadDrawerId) {
+          return {
+            ...payload.roomEvents,
+            secretWord: null,
+          };
+        }
       }
       return payload.roomEvents;
     }

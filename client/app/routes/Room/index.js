@@ -98,7 +98,7 @@ const RoomRoute = ({ match }) => {
     wsClient.onConnected(() => {
       const subscription = wsClient.request({
         query: queries.roomEvents,
-        variables: { code },
+        variables: { code, id: profile.state.id },
       });
       subscription.subscribe(event => {
         const { roomEvents } = event.data;
@@ -134,7 +134,7 @@ const RoomRoute = ({ match }) => {
       wsClient.unsubscribeAll();
       wsClient.close();
     };
-  }, [code, drawingPanel]);
+  }, [code, drawingPanel, profile.state.id]);
 
   const setProfile = useCallback(
     displayName =>

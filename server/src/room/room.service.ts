@@ -4,6 +4,7 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import sha256 from 'crypto-js/sha256';
 import { PubSubEngine } from 'graphql-subscriptions';
 import moment from 'moment';
+import { randomWord } from 'src/common/utils/random-word.utils';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Drawing } from './models/drawing.model';
@@ -104,7 +105,7 @@ export class RoomService {
       gameStarted: true,
       roundStartTime: startTime,
       roundEndTime: startTime + 60,
-      secretWord: 'dog',
+      secretWord: randomWord(),
     };
     room = this.roomModel.findOneAndUpdate({ code }, { ...update, drawingPlayerCursor: 0 }, { new: true });
     this.pubSub.publish('roomEvents', {
@@ -137,7 +138,7 @@ export class RoomService {
       drawingPlayer: drawingPlayer.id,
       roundStartTime: startTime,
       roundEndTime: startTime + 60,
-      secretWord: 'dog',
+      secretWord: randomWord(),
     };
     await this.roomModel.findOneAndUpdate({ code }, { ...update, drawingPlayerCursor });
     this.pubSub.publish('roomEvents', {

@@ -1,6 +1,6 @@
 import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { createRef } from 'react';
 import colors from 'styles/colors';
 
 import ColorPicker from './components/ColorPicker';
@@ -14,9 +14,8 @@ class DrawingPanel extends React.PureComponent {
 
     this.state = { visible: false };
 
-    this.canvas = React.createRef();
-    this.imageHeight = 0;
-    this.imageWidth = 0;
+    this.canvas = createRef();
+    this.bufferCanvas = createRef();
 
     this.isDrawing = false;
     this.linesToUpload = [];
@@ -58,16 +57,24 @@ class DrawingPanel extends React.PureComponent {
 
   onCanvasResize() {
     if (this.canvas.current) {
-      const canvasOffset = this.canvas.current.getBoundingClientRect();
-      const width = Math.min(Math.floor(window.innerWidth - canvasOffset.left * 5 - 2) * 0.65, 976);
-      const height = Math.floor(width * 0.5625 + 16);
+      const prevHeight = this.canvas.current.height;
+      const prevWidth = this.canvas.current.width;
 
-      this.imageHeight = Math.max(this.imageHeight, height);
-      this.imageWidth = Math.max(this.imageWidth, width);
-      this.imageData = this.ctx.getImageData(0, 0, this.imageWidth, this.imageHeight);
-      this.canvas.current.height = height;
-      this.canvas.current.width = width;
-      this.ctx.putImageData(this.imageData, 0, 0);
+      const canvasOffset = this.canvas.current.getBoundingClientRect();
+      const nextWidth = Math.min(Math.floor(window.innerWidth - canvasOffset.left * 5 - 2) * 0.65, 976);
+      const nextHeight = Math.floor(nextWidth * 0.5625 + 16);
+
+      this.bufferCanvas.current.height = prevHeight;
+      this.bufferCanvas.current.width = prevWidth;
+      this.bufferCanvas.current.getContext('2d').drawImage(this.canvas.current, 0, 0);
+
+      this.canvas.current.height = nextHeight;
+      this.canvas.current.width = nextWidth;
+      this.ctx.scale(nextWidth / prevWidth, nextHeight / prevHeight);
+      this.ctx.clearRect(0, 0, prevWidth, prevHeight);
+      this.ctx.drawImage(this.bufferCanvas.current, 0, 0);
+      this.ctx.scale(prevWidth / nextWidth, prevHeight / nextHeight);
+
       this.ctx.lineJoin = 'round';
       this.ctx.lineCap = 'round';
     }
@@ -161,6 +168,7 @@ class DrawingPanel extends React.PureComponent {
           ref={this.canvas}
           style={visible ? { backgroundColor: colors.gainsboro } : {}}
         />
+        <canvas ref={this.bufferCanvas} style={{ display: 'none' }}></canvas>
         <Controls>
           <ToolPicker onSelect={updateTool} value={tool} />
           <ColorPicker disabled={tool !== 'pen'} onSelect={updateStrokeColor} value={strokeColor} />

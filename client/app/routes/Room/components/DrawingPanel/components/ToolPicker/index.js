@@ -35,7 +35,7 @@ const ToolPicker = ({ onSelect, value }) => {
         <Picker>
           <Label>Tools</Label>
           {tools.map(tool => (
-            <Option onClick={() => onClick(tool)}>
+            <Option key={tool.value} onClick={() => onClick(tool)}>
               <Icon>{tool.icon || tool.iconComponent}</Icon>
               {tool.label}
             </Option>

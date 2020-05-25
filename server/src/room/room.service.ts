@@ -18,7 +18,7 @@ export class RoomService {
     @Inject('PubSub') private readonly pubSub: PubSubEngine,
     @InjectModel('Room') private readonly roomModel,
     private readonly schedulerRegistry: SchedulerRegistry,
-  ) {}
+  ) { }
 
   async create(player: Player): Promise<Room> {
     const room = {
@@ -130,7 +130,10 @@ export class RoomService {
     if (!room) {
       throw new NotFoundException();
     }
-    const drawingPlayerCursor = room.drawingPlayerCursor < room.players.length - 1 ? room.drawingPlayerCursor + 1 : 0;
+    let drawingPlayerCursor = room.drawingPlayerCursor < room.players.length - 1 ? room.drawingPlayerCursor + 1 : 0;
+    while (room.players.some(player => player.displayName) && !room.players[drawingPlayerCursor].displayName) {
+      drawingPlayerCursor = drawingPlayerCursor < room.players.length - 1 ? drawingPlayerCursor + 1 : 0;
+    }
     const drawingPlayer = room.players[drawingPlayerCursor];
     const startTime = moment().unix();
     const update = {

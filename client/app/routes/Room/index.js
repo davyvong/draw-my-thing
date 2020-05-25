@@ -2,12 +2,13 @@ import useGraphQL from 'hooks/useGraphQL';
 import useProfile from 'hooks/useProfile';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 import ChatPanel from './components/ChatPanel';
 import CountdownTimer from './components/CountdownTimer';
 import DrawingPanel from './components/DrawingPanel';
+import ProfileModal from './components/ProfileModal';
 import { initialState } from './constants';
 import * as queries from './queries';
 import reducer from './reducer';
@@ -18,6 +19,7 @@ const RoomRoute = ({ match }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [, request] = useGraphQL();
   const profile = useProfile();
+  const [profileModal, setProfileModal] = useState(false);
 
   const cannotDraw = useMemo(() => profile.state.id !== state.drawingPlayer, [
     profile.state,
@@ -43,6 +45,7 @@ const RoomRoute = ({ match }) => {
   const code = useMemo(() => get(match, 'params.roomId'), [match]);
 
   useEffect(() => {
+    setProfileModal(Boolean(!profile.state.displayName));
     request(
       {
         data: {
@@ -105,6 +108,29 @@ const RoomRoute = ({ match }) => {
     };
   }, [code, drawingPanel]);
 
+  const setProfile = useCallback(
+    () =>
+      request(
+        {
+          data: {
+            query: queries.joinRoom(code),
+            variables: {
+              input: {
+                displayName: profile.state.displayName,
+              },
+            },
+          },
+        },
+        data => {
+          dispatch({
+            type: 'joinRoom',
+            data: data.joinRoom,
+          });
+        },
+      ),
+    [code, profile.state],
+  );
+
   const sendMessage = useCallback(
     async message =>
       request({
@@ -158,38 +184,41 @@ const RoomRoute = ({ match }) => {
   }, []);
 
   return (
-    <Wrapper>
-      <Container>
-        <Header>
-          <Title>
-            {title}
-            <Subtitle>Room Code: {code}</Subtitle>
-          </Title>
-          <CountdownTimer endTime={state.roundEndTime} startTime={state.roundStartTime} />
-        </Header>
-        <DrawingPanel
-          disabled={cannotDraw}
-          gameStarted={state.gameStarted}
-          ref={drawingPanel}
-          roomCreator={profile.state.id && state.createdBy === profile.state.id}
-          tool={profile.state.tool}
-          startGame={startGame}
-          strokeColor={profile.state.strokeColor}
-          strokeWidth={profile.state.strokeWidth}
-          updateTool={updateTool}
-          updateStrokeColor={updateStrokeColor}
-          updateStrokeWidth={updateStrokeWidth}
-          uploadLines={sendDrawing}
+    <React.Fragment>
+      <Wrapper>
+        <Container>
+          <Header>
+            <Title>
+              {title}
+              <Subtitle>Room Code: {code}</Subtitle>
+            </Title>
+            <CountdownTimer endTime={state.roundEndTime} startTime={state.roundStartTime} />
+          </Header>
+          <DrawingPanel
+            disabled={cannotDraw}
+            gameStarted={state.gameStarted}
+            ref={drawingPanel}
+            roomCreator={profile.state.id && state.createdBy === profile.state.id}
+            tool={profile.state.tool}
+            startGame={startGame}
+            strokeColor={profile.state.strokeColor}
+            strokeWidth={profile.state.strokeWidth}
+            updateTool={updateTool}
+            updateStrokeColor={updateStrokeColor}
+            updateStrokeWidth={updateStrokeWidth}
+            uploadLines={sendDrawing}
+          />
+        </Container>
+        <ChatPanel
+          disabled={state.drawingPlayer === profile.state.id}
+          drawingPlayer={state.drawingPlayer}
+          messages={state.chat}
+          players={state.playerObjs}
+          sendMessage={sendMessage}
         />
-      </Container>
-      <ChatPanel
-        disabled={state.drawingPlayer === profile.state.id}
-        drawingPlayer={state.drawingPlayer}
-        messages={state.chat}
-        players={state.playerObjs}
-        sendMessage={sendMessage}
-      />
-    </Wrapper>
+      </Wrapper>
+      <ProfileModal code={code} onClose={() => setProfileModal(false)} onSubmit={setProfile} open={profileModal} />
+    </React.Fragment>
   );
 };
 

@@ -8,9 +8,11 @@ import { Wrapper } from './styled';
 const PlayerPanel = ({ drawingPlayer, players }) => (
   <Wrapper>
     <Label>Players</Label>
-    {players.map(player => (
-      <Player {...player} isDrawing={player.id === drawingPlayer} key={player.id} />
-    ))}
+    {players
+      .filter(player => player.displayName)
+      .map(player => (
+        <Player {...player} isDrawing={player.id === drawingPlayer} key={player.id} />
+      ))}
   </Wrapper>
 );
 

@@ -115,6 +115,16 @@ const RoomRoute = ({ match }) => {
     [code],
   );
 
+  const startGame = useCallback(
+    async () =>
+      request({
+        data: {
+          query: queries.startGame({ code }),
+        },
+      }),
+    [code],
+  );
+
   const updateTool = useCallback(async tool => {
     profile.dispatch({
       type: 'setTool',
@@ -160,8 +170,10 @@ const RoomRoute = ({ match }) => {
         </Header>
         <DrawingPanel
           disabled={cannotDraw}
+          gameStarted={state.gameStarted}
           ref={drawingPanel}
           tool={profile.state.tool}
+          startGame={startGame}
           strokeColor={profile.state.strokeColor}
           strokeWidth={profile.state.strokeWidth}
           updateTool={updateTool}

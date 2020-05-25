@@ -2,8 +2,10 @@ import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
 import React, { createRef } from 'react';
 import colors from 'styles/colors';
+import hexToRGB from 'utils/hexToRGB';
 
 import ColorPicker from './components/ColorPicker';
+import StartGameOverlay from './components/GameStartOverlay';
 import ToolPicker from './components/ToolPicker';
 import WidthPicker from './components/WidthPicker';
 import { Canvas, Controls, Wrapper } from './styled';
@@ -171,10 +173,25 @@ class DrawingPanel extends React.PureComponent {
   }
 
   render() {
-    const { disabled, strokeColor, strokeWidth, tool, updateStrokeColor, updateStrokeWidth, updateTool } = this.props;
+    const {
+      disabled,
+      gameStarted,
+      startGame,
+      strokeColor,
+      strokeWidth,
+      tool,
+      updateStrokeColor,
+      updateStrokeWidth,
+      updateTool,
+    } = this.props;
     const { visible } = this.state;
+    const canvasStyle = {
+      backgroundColor: hexToRGB(colors.gray, 0.05),
+      border: `1px solid ${hexToRGB(colors.gray, 0.25, { useAlpha: false })}`,
+    };
     return (
       <Wrapper>
+        <StartGameOverlay onStart={startGame} visible={!gameStarted} />
         <Canvas
           disabled={disabled}
           onMouseDown={this.onMouseDown}
@@ -182,7 +199,7 @@ class DrawingPanel extends React.PureComponent {
           onMouseMove={this.onMouseMove}
           onMouseUp={this.onMouseUp}
           ref={this.canvas}
-          style={visible ? { backgroundColor: colors.gainsboro } : {}}
+          style={visible ? canvasStyle : {}}
         />
         <canvas ref={this.bufferCanvas} style={{ display: 'none' }}></canvas>
         <Controls>
@@ -197,6 +214,7 @@ class DrawingPanel extends React.PureComponent {
 
 DrawingPanel.defaultProps = {
   disabled: true,
+  gameStarted: false,
   strokeColor: '#EE92C2',
   strokeWidth: 5,
   tool: 'pen',
@@ -204,9 +222,11 @@ DrawingPanel.defaultProps = {
 
 DrawingPanel.propTypes = {
   disabled: PropTypes.bool,
-  tool: PropTypes.string,
+  gameStarted: PropTypes.bool,
+  startGame: PropTypes.func.isRequired,
   strokeColor: PropTypes.string,
   strokeWidth: PropTypes.number,
+  tool: PropTypes.string,
   updateStrokeColor: PropTypes.func.isRequired,
   updateStrokeWidth: PropTypes.func.isRequired,
   updateTool: PropTypes.func.isRequired,

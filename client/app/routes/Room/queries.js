@@ -65,6 +65,8 @@ export const sendDrawing = ({ code }) =>
   compressQuery(`
     mutation ($input: DrawingInput!) {
       sendDrawing(code: "${code}", input: $input) {
+        canvasHeight
+        canvasWidth
         lines {
           start {
             offsetX

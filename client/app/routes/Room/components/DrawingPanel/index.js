@@ -101,7 +101,15 @@ class DrawingPanel extends React.PureComponent {
       };
       this.linesToUpload = this.linesToUpload.concat(lineData);
       const { strokeColor, strokeWidth, tool } = this.props;
-      this.drawLine(lineData.start, lineData.stop, strokeColor, strokeWidth, tool);
+      this.drawLine({
+        canvasHeight: this.canvas.current.height,
+        canvasWidth: this.canvas.current.width,
+        startOffset: lineData.start,
+        stopOffset: lineData.stop,
+        strokeColor,
+        strokeWidth,
+        tool,
+      });
     }
   }
 
@@ -110,33 +118,39 @@ class DrawingPanel extends React.PureComponent {
     this.uploadLines();
   }
 
-  drawLine(startOffset, stopOffset, strokeColor, strokeWidth, tool = 'pen') {
-    if (tool === 'pen') {
-      this.drawUsingPen(startOffset, stopOffset, strokeColor, strokeWidth);
-    } else if (tool === 'eraser') {
-      this.drawUsingEraser(startOffset, stopOffset, strokeWidth);
+  drawLine({ startOffset, stopOffset, strokeColor, strokeWidth, canvasHeight, canvasWidth, tool }) {
+    const scaleX = this.canvas.current.width / canvasWidth;
+    const scaleY = this.canvas.current.height / canvasHeight;
+    if (tool === 'eraser') {
+      this.drawUsingEraser({ startOffset, stopOffset, strokeWidth, scaleX, scaleY });
+    } else {
+      this.drawUsingPen({ startOffset, stopOffset, strokeColor, strokeWidth, scaleX, scaleY });
     }
   }
 
-  drawUsingPen(startOffset, stopOffset, strokeColor, strokeWidth) {
+  drawUsingPen({ startOffset, stopOffset, strokeColor, strokeWidth, scaleX, scaleY }) {
     this.ctx.beginPath();
+    this.ctx.scale(scaleX, scaleY);
     this.ctx.strokeStyle = strokeColor || this.props.strokeColor;
     this.ctx.lineWidth = strokeWidth || this.props.strokeWidth;
     this.ctx.globalCompositeOperation = 'source-over';
     this.ctx.moveTo(startOffset.offsetX, startOffset.offsetY);
     this.ctx.lineTo(stopOffset.offsetX, stopOffset.offsetY);
     this.ctx.stroke();
+    this.ctx.scale(1 / scaleX, 1 / scaleY);
     this.lineStart = stopOffset;
   }
 
-  drawUsingEraser(startOffset, stopOffset, strokeWidth) {
+  drawUsingEraser({ startOffset, stopOffset, strokeWidth, scaleX, scaleY }) {
     this.ctx.beginPath();
+    this.ctx.scale(scaleX, scaleY);
     this.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
     this.ctx.lineWidth = strokeWidth || this.props.strokeWidth;
     this.ctx.globalCompositeOperation = 'destination-out';
     this.ctx.moveTo(startOffset.offsetX, startOffset.offsetY);
     this.ctx.lineTo(stopOffset.offsetX, stopOffset.offsetY);
     this.ctx.stroke();
+    this.ctx.scale(1 / scaleX, 1 / scaleY);
     this.lineStart = stopOffset;
   }
 
@@ -146,6 +160,8 @@ class DrawingPanel extends React.PureComponent {
       this.linesToUpload = [];
       const { strokeColor, strokeWidth, tool } = this.props;
       this.props.uploadLines({
+        canvasHeight: this.canvas.current.height,
+        canvasWidth: this.canvas.current.width,
         lines: lineData,
         strokeColor,
         strokeWidth,

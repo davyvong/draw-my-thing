@@ -21,6 +21,7 @@ export const joinRoom = code =>
         id
       }
       joinRoom(code: "${code}") {
+        code
         id
       }
     }

@@ -19,16 +19,20 @@ input CreateAccountInput {
   strokeWidth: Float
 }
 
-"""The `Line` object type represents a line on the canvas."""
+"""The `Drawing` object type represents a drawing on the canvas."""
 type Drawing {
+  canvasHeight: Float!
+  canvasWidth: Float!
   lines: [Line!]!
   strokeColor: String!
   strokeWidth: Float!
   tool: String!
 }
 
-"""The `Line` object type represents a line on the canvas."""
+"""The `Drawing` object type represents a drawing on the canvas."""
 input DrawingInput {
+  canvasHeight: Float!
+  canvasWidth: Float!
   lines: [LineInput!]!
   strokeColor: String!
   strokeWidth: Float!

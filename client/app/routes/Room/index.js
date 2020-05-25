@@ -71,9 +71,17 @@ const RoomRoute = ({ match }) => {
       subscription.subscribe(event => {
         const { roomEvents } = event.data;
         if (roomEvents.type === 'drawing') {
-          const { lines, strokeColor, strokeWidth, tool } = roomEvents.data;
+          const { canvasHeight, canvasWidth, lines, strokeColor, strokeWidth, tool } = roomEvents.data;
           lines.forEach(line => {
-            drawingPanel.current.drawLine(line.start, line.stop, strokeColor, strokeWidth, tool);
+            drawingPanel.current.drawLine({
+              startOffset: line.start,
+              stopOffset: line.stop,
+              strokeColor,
+              strokeWidth,
+              canvasHeight,
+              canvasWidth,
+              tool,
+            });
           });
         } else {
           dispatch(roomEvents);

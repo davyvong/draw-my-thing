@@ -6,12 +6,12 @@ import { CirclePicker } from 'react-color';
 
 import { Button, Picker, Preview } from './styled';
 
-const ColorPicker = ({ onSelect, value }) => {
+const ColorPicker = ({ disabled, onSelect, value }) => {
   const ref = useRef();
   const [open, setOpen] = useState(false);
   return (
     <React.Fragment>
-      <Button onClick={() => setOpen(true)} ref={ref}>
+      <Button disabled={disabled} onClick={() => setOpen(true)} ref={ref}>
         <Preview color={value} />
         {value}
       </Button>
@@ -35,7 +35,12 @@ const ColorPicker = ({ onSelect, value }) => {
   );
 };
 
+ColorPicker.defaultProps = {
+  disabled: false,
+};
+
 ColorPicker.propTypes = {
+  disabled: PropTypes.bool,
   onSelect: PropTypes.func,
   value: PropTypes.string,
 };

@@ -12,4 +12,7 @@ export class Drawing {
 
   @Field()
   strokeWidth: number
+
+  @Field()
+  tool: string
 }

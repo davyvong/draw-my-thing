@@ -71,9 +71,9 @@ const RoomRoute = ({ match }) => {
       subscription.subscribe(event => {
         const { roomEvents } = event.data;
         if (roomEvents.type === 'drawing') {
-          const { lines, strokeColor, strokeWidth } = roomEvents.data;
+          const { lines, strokeColor, strokeWidth, tool } = roomEvents.data;
           lines.forEach(line => {
-            drawingPanel.current.drawLine(line.start, line.stop, strokeColor, strokeWidth);
+            drawingPanel.current.drawLine(line.start, line.stop, strokeColor, strokeWidth, tool);
           });
         } else {
           dispatch(roomEvents);
@@ -106,6 +106,18 @@ const RoomRoute = ({ match }) => {
       }),
     [code],
   );
+
+  const updateTool = useCallback(async tool => {
+    profile.dispatch({
+      type: 'setTool',
+      data: tool,
+    });
+    // return request({
+    //   data: {
+    //     query: queries.updateTool(tool),
+    //   },
+    // });
+  }, []);
 
   const updateStrokeColor = useCallback(async color => {
     profile.dispatch({
@@ -141,8 +153,10 @@ const RoomRoute = ({ match }) => {
         <DrawingPanel
           disabled={cannotDraw}
           ref={drawingPanel}
+          tool={profile.state.tool}
           strokeColor={profile.state.strokeColor}
           strokeWidth={profile.state.strokeWidth}
+          updateTool={updateTool}
           updateStrokeColor={updateStrokeColor}
           updateStrokeWidth={updateStrokeWidth}
           uploadLines={sendDrawing}

@@ -161,7 +161,7 @@ export class RoomService {
         roomEvents: {
           code,
           data: message,
-          type: 'system',
+          type: 'message',
         },
       });
     }

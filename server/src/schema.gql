@@ -24,6 +24,7 @@ type Drawing {
   lines: [Line!]!
   strokeColor: String!
   strokeWidth: Float!
+  tool: String!
 }
 
 """The `Line` object type represents a line on the canvas."""
@@ -31,6 +32,7 @@ input DrawingInput {
   lines: [LineInput!]!
   strokeColor: String!
   strokeWidth: Float!
+  tool: String!
 }
 
 """The `Event` object type represents an real-time event."""

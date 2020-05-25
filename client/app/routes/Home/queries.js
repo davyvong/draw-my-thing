@@ -7,6 +7,7 @@ export const createRoom = compressQuery(`
         id
       }
       createRoom {
+        code
         id
       }
     }

@@ -20,6 +20,12 @@ function reducer(state, action) {
         localStorage.setItem('token', action.data);
         return draft;
       }
+      case 'setTool': {
+        draft.tool = action.data;
+        const { token, ...profile } = draft;
+        localStorage.setItem('profile', JSON.stringify(profile));
+        return draft;
+      }
       case 'setStrokeColor': {
         draft.strokeColor = action.data;
         const { token, ...profile } = draft;

@@ -9,6 +9,7 @@ import { Button, Line, Option, Picker, Preview } from './styled';
 const WidthPicker = ({ onSelect, value }) => {
   const ref = useRef();
   const [open, setOpen] = useState(false);
+
   const sizes = [
     { label: 'Extra Small', value: 3 },
     { label: 'Small', value: 5 },
@@ -16,7 +17,13 @@ const WidthPicker = ({ onSelect, value }) => {
     { label: 'Medium', value: 9 },
     { label: 'Large', value: 11 },
   ];
+
   const { label } = sizes.find(size => size.value === value);
+
+  const onClick = size => {
+    onSelect(size.value);
+    setOpen(false);
+  };
   return (
     <React.Fragment>
       <Button onClick={() => setOpen(true)} ref={ref}>
@@ -29,15 +36,8 @@ const WidthPicker = ({ onSelect, value }) => {
         <Picker>
           <Label>Stroke Width</Label>
           {sizes.map(size => (
-            <Tooltip message={size.label}>
-              <Option
-                key={size.value}
-                onClick={() => {
-                  onSelect(size.value);
-                  setOpen(false);
-                }}
-                selected={size.value === value}
-              >
+            <Tooltip key={size.value} message={size.label}>
+              <Option onClick={() => onClick(size)}>
                 <Line size={size.value} />
               </Option>
             </Tooltip>

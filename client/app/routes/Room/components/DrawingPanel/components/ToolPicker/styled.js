@@ -21,22 +21,16 @@ const StyledButton = styled.button`
   }
 `;
 
-const StyledLine = styled.div`
-  background-color: black;
-  border-radius: ${props => props.size / 2}px;
-  height: ${props => props.size}px;
-  width: 100%;
-`;
-
 const StyledOption = styled.div`
   align-items: center;
   border-radius: 0.25rem;
   display: flex;
-  height: 2rem;
-  justify-content: center;
-  padding: 0 1rem;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
   transition: 150ms ease-in-out;
-  width: 7rem;
+
+  & i {
+    margin-right: 1rem;
+  }
 
   &:hover {
     background-color: ${hexToRGB(colors.gray, 0.15)};
@@ -64,7 +58,6 @@ const StyledPreview = styled.div`
 
 export {
   StyledButton as Button,
-  StyledLine as Line,
   StyledOption as Option,
   StyledPicker as Picker,
   StyledPreview as Preview,

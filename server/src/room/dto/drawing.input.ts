@@ -12,4 +12,7 @@ export class DrawingInput {
 
   @Field()
   strokeWidth: number
+
+  @Field()
+  tool: string
 }

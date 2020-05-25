@@ -4,6 +4,7 @@ import React from 'react';
 import colors from 'styles/colors';
 
 import ColorPicker from './components/ColorPicker';
+import ToolPicker from './components/ToolPicker';
 import WidthPicker from './components/WidthPicker';
 import { Canvas, Controls, Wrapper } from './styled';
 
@@ -69,7 +70,6 @@ class DrawingPanel extends React.PureComponent {
       this.ctx.putImageData(this.imageData, 0, 0);
       this.ctx.lineJoin = 'round';
       this.ctx.lineCap = 'round';
-      this.ctx.lineWidth = 5;
     }
     if (!this.state.visible) {
       this.setState({ visible: true });
@@ -93,7 +93,8 @@ class DrawingPanel extends React.PureComponent {
         stop: { offsetX, offsetY },
       };
       this.linesToUpload = this.linesToUpload.concat(lineData);
-      this.drawLine(lineData.start, lineData.stop, this.props.strokeColor);
+      const { strokeColor, strokeWidth, tool } = this.props;
+      this.drawLine(lineData.start, lineData.stop, strokeColor, strokeWidth, tool);
     }
   }
 
@@ -102,12 +103,30 @@ class DrawingPanel extends React.PureComponent {
     this.uploadLines();
   }
 
-  drawLine(startOffset, stopOffset, strokeColor, strokeWidth) {
+  drawLine(startOffset, stopOffset, strokeColor, strokeWidth, tool = 'pen') {
+    if (tool === 'pen') {
+      this.drawUsingPen(startOffset, stopOffset, strokeColor, strokeWidth);
+    } else if (tool === 'eraser') {
+      this.drawUsingEraser(startOffset, stopOffset, strokeWidth);
+    }
+  }
+
+  drawUsingPen(startOffset, stopOffset, strokeColor, strokeWidth) {
     this.ctx.beginPath();
     this.ctx.strokeStyle = strokeColor || this.props.strokeColor;
-    this.ctx.lineJoin = 'round';
-    this.ctx.lineCap = 'round';
     this.ctx.lineWidth = strokeWidth || this.props.strokeWidth;
+    this.ctx.globalCompositeOperation = 'source-over';
+    this.ctx.moveTo(startOffset.offsetX, startOffset.offsetY);
+    this.ctx.lineTo(stopOffset.offsetX, stopOffset.offsetY);
+    this.ctx.stroke();
+    this.lineStart = stopOffset;
+  }
+
+  drawUsingEraser(startOffset, stopOffset, strokeWidth) {
+    this.ctx.beginPath();
+    this.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+    this.ctx.lineWidth = strokeWidth || this.props.strokeWidth;
+    this.ctx.globalCompositeOperation = 'destination-out';
     this.ctx.moveTo(startOffset.offsetX, startOffset.offsetY);
     this.ctx.lineTo(stopOffset.offsetX, stopOffset.offsetY);
     this.ctx.stroke();
@@ -118,17 +137,18 @@ class DrawingPanel extends React.PureComponent {
     if (this.linesToUpload.length > 0) {
       const lineData = this.linesToUpload;
       this.linesToUpload = [];
-      const { strokeColor, strokeWidth } = this.props;
+      const { strokeColor, strokeWidth, tool } = this.props;
       this.props.uploadLines({
         lines: lineData,
         strokeColor,
         strokeWidth,
+        tool,
       });
     }
   }
 
   render() {
-    const { disabled, strokeColor, strokeWidth, updateStrokeColor, updateStrokeWidth } = this.props;
+    const { disabled, strokeColor, strokeWidth, tool, updateStrokeColor, updateStrokeWidth, updateTool } = this.props;
     const { visible } = this.state;
     return (
       <Wrapper>
@@ -142,7 +162,8 @@ class DrawingPanel extends React.PureComponent {
           style={visible ? { backgroundColor: colors.gainsboro } : {}}
         />
         <Controls>
-          <ColorPicker onSelect={updateStrokeColor} value={strokeColor} />
+          <ToolPicker onSelect={updateTool} value={tool} />
+          <ColorPicker disabled={tool !== 'pen'} onSelect={updateStrokeColor} value={strokeColor} />
           <WidthPicker onSelect={updateStrokeWidth} value={strokeWidth} />
         </Controls>
       </Wrapper>
@@ -154,14 +175,17 @@ DrawingPanel.defaultProps = {
   disabled: true,
   strokeColor: '#EE92C2',
   strokeWidth: 5,
+  tool: 'pen',
 };
 
 DrawingPanel.propTypes = {
   disabled: PropTypes.bool,
+  tool: PropTypes.string,
   strokeColor: PropTypes.string,
   strokeWidth: PropTypes.number,
   updateStrokeColor: PropTypes.func.isRequired,
   updateStrokeWidth: PropTypes.func.isRequired,
+  updateTool: PropTypes.func.isRequired,
   uploadLines: PropTypes.func.isRequired,
 };
 

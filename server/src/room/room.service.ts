@@ -96,18 +96,17 @@ export class RoomService {
     }
     const drawingPlayer = room.players[0];
     const startTime = moment().unix();
-    const nextRoundTimeout = setTimeout(() => this.startNextRound(code), 60);
+    const nextRoundTimeout = setTimeout(() => this.startNextRound(code), 60000);
     this.schedulerRegistry.addTimeout(`room.${code}.nextRound`, nextRoundTimeout);
     const update = {
       drawing: [],
       drawingPlayer: drawingPlayer.id,
-      drawingPlayerCursor: 0,
       gameStarted: true,
       roundStartTime: startTime,
       roundEndTime: startTime + 60,
       secretWord: 'dog',
     };
-    room = this.roomModel.findOneAndUpdate({ code }, update, { new: true });
+    room = this.roomModel.findOneAndUpdate({ code }, { ...update, drawingPlayerCursor: 0 }, { new: true });
     this.pubSub.publish('roomEvents', {
       roomEvents: {
         code,
@@ -131,12 +130,11 @@ export class RoomService {
     const update = {
       drawing: [],
       drawingPlayer: drawingPlayer.id,
-      drawingPlayerCursor,
       roundStartTime: startTime,
       roundEndTime: startTime + 60,
       secretWord: 'dog',
     };
-    this.roomModel.findOneAndUpdate({ code }, update, { new: true });
+    this.roomModel.findOneAndUpdate({ code }, { ...update, drawingPlayerCursor }, { new: true });
     this.pubSub.publish('roomEvents', {
       roomEvents: {
         code,
@@ -145,7 +143,7 @@ export class RoomService {
       },
     });
     this.sendSystemMessage(code, `${drawingPlayer.displayName} is drawing.`);
-    const nextRoundTimeout = setTimeout(() => this.startNextRound(code), 60);
+    const nextRoundTimeout = setTimeout(() => this.startNextRound(code), 60000);
     this.schedulerRegistry.addTimeout(`room.${code}.nextRound`, nextRoundTimeout);
   }
 

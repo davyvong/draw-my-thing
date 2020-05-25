@@ -1,5 +1,5 @@
 export const initialState = {
-  displayName: null,
+  displayName: '',
   token: null,
   tool: undefined,
   strokeColor: undefined,

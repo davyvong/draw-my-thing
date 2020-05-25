@@ -19,6 +19,10 @@ function reducer(state, action) {
         draft.playerIds.add(id);
         return draft;
       }
+      case 'gameStart':
+      case 'roundStart': {
+        return Object.assign(draft, action.data);
+      }
       case 'message': {
         draft.chat.push(action.data);
         return draft;

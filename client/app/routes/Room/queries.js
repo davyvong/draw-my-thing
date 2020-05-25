@@ -83,6 +83,15 @@ export const sendDrawing = ({ code }) =>
     }
 `);
 
+export const startGame = ({ code }) =>
+  compressQuery(`
+    mutation {
+      startGame(code: "${code}") {
+        id
+      }
+    }
+`);
+
 export const roomEvents = compressQuery(`
   subscription {
     roomEvents {

@@ -70,21 +70,31 @@ const RoomRoute = ({ match }) => {
       });
       subscription.subscribe(event => {
         const { roomEvents } = event.data;
-        if (roomEvents.type === 'drawing') {
-          const { canvasHeight, canvasWidth, lines, strokeColor, strokeWidth, tool } = roomEvents.data;
-          lines.forEach(line => {
-            drawingPanel.current.drawLine({
-              startOffset: line.start,
-              stopOffset: line.stop,
-              strokeColor,
-              strokeWidth,
-              canvasHeight,
-              canvasWidth,
-              tool,
+        switch (roomEvents.type) {
+          case 'drawing': {
+            const { canvasHeight, canvasWidth, lines, strokeColor, strokeWidth, tool } = roomEvents.data;
+            lines.forEach(line => {
+              drawingPanel.current.drawLine({
+                startOffset: line.start,
+                stopOffset: line.stop,
+                strokeColor,
+                strokeWidth,
+                canvasHeight,
+                canvasWidth,
+                tool,
+              });
             });
-          });
-        } else {
-          dispatch(roomEvents);
+            break;
+          }
+          case 'gameStart':
+          case 'roundStart': {
+            drawingPanel.clearCanvas();
+            dispatch(roomEvents);
+            break;
+          }
+          default:
+            dispatch(roomEvents);
+            break;
         }
       });
     });
@@ -92,7 +102,7 @@ const RoomRoute = ({ match }) => {
       wsClient.unsubscribeAll();
       wsClient.close();
     };
-  }, [code]);
+  }, [code, drawingPanel]);
 
   const sendMessage = useCallback(
     async message =>
@@ -130,11 +140,6 @@ const RoomRoute = ({ match }) => {
       type: 'setTool',
       data: tool,
     });
-    // return request({
-    //   data: {
-    //     query: queries.updateTool(tool),
-    //   },
-    // });
   }, []);
 
   const updateStrokeColor = useCallback(async color => {
@@ -142,11 +147,6 @@ const RoomRoute = ({ match }) => {
       type: 'setStrokeColor',
       data: color,
     });
-    // return request({
-    //   data: {
-    //     query: queries.updateStrokeColor(color),
-    //   },
-    // });
   }, []);
 
   const updateStrokeWidth = useCallback(async width => {
@@ -154,11 +154,6 @@ const RoomRoute = ({ match }) => {
       type: 'setStrokeWidth',
       data: width,
     });
-    // return request({
-    //   data: {
-    //     query: queries.updateStrokeWidth(width),
-    //   },
-    // });
   }, []);
 
   return (
@@ -172,6 +167,7 @@ const RoomRoute = ({ match }) => {
           disabled={cannotDraw}
           gameStarted={state.gameStarted}
           ref={drawingPanel}
+          roomCreator={profile.state.id && state.createdBy === profile.state.id}
           tool={profile.state.tool}
           startGame={startGame}
           strokeColor={profile.state.strokeColor}

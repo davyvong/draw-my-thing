@@ -25,6 +25,7 @@ class DrawingPanel extends React.PureComponent {
     this.windowHeight = window.innerHeight;
     this.windowWidth = window.innerWidth;
 
+    this.clearCanvas = this.clearCanvas.bind(this);
     this.drawLine = this.drawLine.bind(this);
     this.onCanvasResize = debounce(this.onCanvasResize.bind(this), 500);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -73,7 +74,7 @@ class DrawingPanel extends React.PureComponent {
       this.canvas.current.height = nextHeight;
       this.canvas.current.width = nextWidth;
       this.ctx.scale(nextWidth / prevWidth, nextHeight / prevHeight);
-      this.ctx.clearRect(0, 0, prevWidth, prevHeight);
+      this.clearCanvas();
       this.ctx.drawImage(this.bufferCanvas.current, 0, 0);
       this.ctx.scale(prevWidth / nextWidth, prevHeight / nextHeight);
 
@@ -118,6 +119,10 @@ class DrawingPanel extends React.PureComponent {
   onMouseUp() {
     this.isDrawing = false;
     this.uploadLines();
+  }
+
+  clearCanvas() {
+    this.ctx.clearRect(0, 0, this.canvas.current.width, this.canvas.current.height);
   }
 
   drawLine({ startOffset, stopOffset, strokeColor, strokeWidth, canvasHeight, canvasWidth, tool }) {
@@ -176,6 +181,7 @@ class DrawingPanel extends React.PureComponent {
     const {
       disabled,
       gameStarted,
+      roomCreator,
       startGame,
       strokeColor,
       strokeWidth,
@@ -191,7 +197,7 @@ class DrawingPanel extends React.PureComponent {
     };
     return (
       <Wrapper>
-        <StartGameOverlay onStart={startGame} visible={!gameStarted} />
+        <StartGameOverlay onStart={startGame} roomCreator={roomCreator} visible={!gameStarted} />
         <Canvas
           disabled={disabled}
           onMouseDown={this.onMouseDown}
@@ -223,6 +229,7 @@ DrawingPanel.defaultProps = {
 DrawingPanel.propTypes = {
   disabled: PropTypes.bool,
   gameStarted: PropTypes.bool,
+  roomCreator: PropTypes.bool,
   startGame: PropTypes.func.isRequired,
   strokeColor: PropTypes.string,
   strokeWidth: PropTypes.number,

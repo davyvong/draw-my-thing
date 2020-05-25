@@ -4,19 +4,27 @@ import React from 'react';
 
 import { Overlay } from './styled';
 
-const GameStartOverlay = ({ onStart, visible }) => {
+const GameStartOverlay = ({ onStart, roomCreator, visible }) => {
   if (!visible) {
     return null;
   }
+  if (roomCreator) {
+    return (
+      <Overlay>
+        <Button onClick={onStart}>Start Game</Button>
+      </Overlay>
+    );
+  }
   return (
     <Overlay>
-      <Button onClick={onStart}>Start Game</Button>
+      <div>Waiting for room creator to start the game.</div>
     </Overlay>
   );
 };
 
 GameStartOverlay.propTypes = {
   onStart: PropTypes.func,
+  roomCreator: PropTypes.bool,
   visible: PropTypes.bool,
 };
 

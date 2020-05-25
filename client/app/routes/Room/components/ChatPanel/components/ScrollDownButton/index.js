@@ -1,4 +1,5 @@
 import Icon from 'components/Icon';
+import Tooltip from 'components/Tooltip';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -9,9 +10,11 @@ const Message = ({ onClick, visible }) => {
     return null;
   }
   return (
-    <Wrapper onClick={onClick}>
-      <Icon>arrow_downward</Icon>
-    </Wrapper>
+    <Tooltip message="Scroll to bottom">
+      <Wrapper onClick={onClick}>
+        <Icon>arrow_downward</Icon>
+      </Wrapper>
+    </Tooltip>
   );
 };
 

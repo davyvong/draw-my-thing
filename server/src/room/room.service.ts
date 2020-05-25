@@ -139,7 +139,7 @@ export class RoomService {
       roundEndTime: startTime + 60,
       secretWord: 'dog',
     };
-    this.roomModel.findOneAndUpdate({ code }, { ...update, drawingPlayerCursor }, { new: true });
+    await this.roomModel.findOneAndUpdate({ code }, { ...update, drawingPlayerCursor });
     this.pubSub.publish('roomEvents', {
       roomEvents: {
         code,
@@ -192,7 +192,7 @@ export class RoomService {
       text,
       type: 'player',
     };
-    this.roomModel.findOneAndUpdate({ code }, { $push: { chat: message } }, { new: true })
+    this.roomModel.findOneAndUpdate({ code }, { $push: { chat: message } })
     this.pubSub.publish('roomEvents', {
       roomEvents: {
         code,
@@ -204,10 +204,7 @@ export class RoomService {
   }
 
   async sendDrawing(code: string, drawing: Drawing): Promise<Drawing> {
-    const room = await this.roomModel.findOneAndUpdate({ code }, { $push: { drawing } }, { new: true });
-    if (!room) {
-      return null
-    }
+    await this.roomModel.findOneAndUpdate({ code }, { $push: { drawing } });
     this.pubSub.publish('roomEvents', {
       roomEvents: {
         code,

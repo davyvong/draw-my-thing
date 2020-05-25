@@ -1,6 +1,7 @@
 import Icon from 'components/Icon';
 import IconButton from 'components/IconButton';
 import Popover from 'components/Popover';
+import Tooltip from 'components/Tooltip';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -10,7 +11,7 @@ import Message from './components/Message';
 import ScrollDownButton from './components/ScrollDownButton';
 import { Form, Header, Input, Log, Title, Wrapper } from './styled';
 
-const ChatPanel = ({ drawingPlayer, messages, players, sendMessage }) => {
+const ChatPanel = ({ disabled, drawingPlayer, messages, players, sendMessage }) => {
   const logRef = useRef();
   const playerRef = useRef();
   const [input, setInput] = useState('');
@@ -95,12 +96,14 @@ const ChatPanel = ({ drawingPlayer, messages, players, sendMessage }) => {
         </Header>
         <Log ref={logRef}>{messages.map(renderMessage)}</Log>
         <ScrollDownButton onClick={() => scrollToBottom({ behavior: 'smooth' })} visible={!isBottom} />
-        <Form onSubmit={submitMessage}>
-          <Input onChange={onChangeInput} placeholder="Enter here" value={input} />
-          <IconButton>
-            <Icon onClick={submitMessage}>send</Icon>
-          </IconButton>
-        </Form>
+        <Tooltip message={disabled ? 'You cannot send messages when drawing.' : ''}>
+          <Form onSubmit={submitMessage}>
+            <Input disabled={disabled} onChange={onChangeInput} placeholder="Enter here" value={input} />
+            <IconButton disabled={disabled}>
+              <Icon onClick={submitMessage}>send</Icon>
+            </IconButton>
+          </Form>
+        </Tooltip>
       </Wrapper>
       <Popover anchor={playerRef.current} open={showPlayers} onClose={hidePlayerList}>
         <PlayerPanel drawingPlayer={drawingPlayer} players={playerList} />
@@ -110,10 +113,12 @@ const ChatPanel = ({ drawingPlayer, messages, players, sendMessage }) => {
 };
 
 ChatPanel.defaultProps = {
+  disabled: false,
   messages: [],
 };
 
 ChatPanel.propTypes = {
+  disabled: PropTypes.bool,
   drawingPlayer: PropTypes.string,
   messages: PropTypes.array,
   players: PropTypes.object,

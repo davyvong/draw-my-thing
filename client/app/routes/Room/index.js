@@ -35,7 +35,7 @@ const RoomRoute = ({ match }) => {
       return 'Draw My Thing';
     }
     if (cannotDraw) {
-      return `${drawingPlayerName} is drawing`;
+      return `${drawingPlayerName} is drawing.`;
     }
     return `Your secret word is ${state.secretWord}.`;
   }, [drawingPlayerName, cannotDraw, state.gameStarted, state.secretWord]);
@@ -183,6 +183,7 @@ const RoomRoute = ({ match }) => {
         />
       </Container>
       <ChatPanel
+        disabled={state.drawingPlayer === profile.state.id}
         drawingPlayer={state.drawingPlayer}
         messages={state.chat}
         players={state.playerObjs}

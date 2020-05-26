@@ -223,7 +223,7 @@ export class RoomService {
     if (!room) {
       throw new NotFoundException();
     }
-    if (room.secretWord === text) {
+    if (room.secretWord === text.toLowerCase()) {
       const message = await this.sendSystemMessage(code, `${player.displayName} has guessed the secret word.`);
       this.pubSub.publish('roomEvents', {
         code,

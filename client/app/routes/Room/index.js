@@ -19,7 +19,7 @@ const RoomRoute = ({ match }) => {
   const drawingPanel = useRef();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [, request] = useGraphQL();
-  const [{ error, pending }, initRequest] = useGraphQL({ pending: true });
+  const [{ error, pending }, joinRequest] = useGraphQL();
   const profile = useProfile();
   const [profileModal, setProfileModal] = useState(false);
 
@@ -76,7 +76,7 @@ const RoomRoute = ({ match }) => {
 
   useEffect(() => {
     if (profile.state.displayName) {
-      initRequest(
+      joinRequest(
         {
           data: {
             query: queries.joinRoom(code),
@@ -141,7 +141,7 @@ const RoomRoute = ({ match }) => {
 
   const setProfile = useCallback(
     displayName =>
-      request(
+      joinRequest(
         {
           data: {
             query: queries.joinRoom(code),

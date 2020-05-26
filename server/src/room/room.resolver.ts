@@ -30,7 +30,10 @@ export class RoomResolver {
     if (!room) {
       throw new NotFoundException();
     }
-    return account.id === room.createdBy ? room : { ...room, secretWord : null };
+    if (account.id !== room.createdBy) {
+      room.secretWord = null;
+    }
+    return room;
   }
 
   @Mutation(() => Room)
@@ -41,7 +44,10 @@ export class RoomResolver {
       id: account.id,
     };
     const room = await this.roomService.join(player, code);
-    return account.id === room.createdBy ? room : { ...room, secretWord : null };
+    if (account.id !== room.createdBy) {
+      room.secretWord = null;
+    }
+    return room;
   }
 
   @Mutation(() => Room)
@@ -52,7 +58,10 @@ export class RoomResolver {
       throw new BadRequestException();
     }
     room = await this.roomService.startGame(code);
-    return account.id === room.createdBy ? room : { ...room, secretWord : null };
+    if (account.id !== room.createdBy) {
+      room.secretWord = null;
+    }
+    return room;
   }
 
   @Mutation(() => Message)

@@ -6,10 +6,8 @@ export const joinRoom = code =>
       updateAccount (input: $input) {
         displayName
         id
-        strokeColor
-        strokeWidth
       }
-      joinRoom(code: "${code}") {
+      joinRoom (code: "${code}") {
         chat {
           id
           sender

@@ -49,6 +49,7 @@ const RoomRoute = ({ match }) => {
       type: 'setProfile',
       data: {
         id: data.updateAccount.id,
+        displayName: data.updateAccount.displayName,
       },
     });
     if (drawingPanel.current) {

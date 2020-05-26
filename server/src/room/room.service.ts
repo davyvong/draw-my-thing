@@ -114,6 +114,10 @@ export class RoomService {
     if (player.displayName) {
       this.sendSystemMessage(code, `${player.displayName} has left the room.`);
     }
+    if (room.players.length === 0) {
+      this.roomModel.findOneAndRemove({ code });
+      return;
+    }
     if (room.drawingPlayer === playerId) {
       this.startNextRound(code);
     }

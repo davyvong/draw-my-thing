@@ -4,7 +4,8 @@ function reducer(state, action) {
   return produce(state, draft => {
     switch (action.type) {
       case 'setProfile': {
-        Object.assign(draft, action.data);
+        const displayName = { displayName: draft.displayName || action.data.displayName || '' };
+        Object.assign(draft, action.data, displayName);
         const { token, ...profile } = draft;
         localStorage.setItem('profile', JSON.stringify(profile));
         return draft;

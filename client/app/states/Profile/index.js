@@ -17,10 +17,34 @@ export const ProfileProvider = ({ children }) => {
   useEffect(() => {
     if (localStorage.getItem('token')) {
       dispatch({ type: 'rehydrate' });
+      findCurrentAccount();
     } else {
       signInAnonymously();
     }
   }, []);
+
+  const findCurrentAccount = useCallback(
+    () =>
+      request(
+        {
+          data: {
+            query: queries.findCurrentAccount,
+          },
+        },
+        data => {
+          dispatch({
+            type: 'setProfile',
+            data: data.findCurrentAccount,
+          });
+        },
+        error => {
+          if (error.message === 'Unauthorized') {
+            signInAnonymously();
+          }
+        },
+      ),
+    [],
+  );
 
   const signInAnonymously = useCallback(
     () =>

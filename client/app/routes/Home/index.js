@@ -151,7 +151,12 @@ const HomeRoute = () => {
       <Title>Draw My Thing</Title>
       <Subtitle>Guessing Game</Subtitle>
       <Label>Name</Label>
-      <Input onBlur={onBlurDisplayName} onChange={onChangeDisplayName} placeholder="Jane Doe" value={displayName} />
+      <Input
+        onBlur={onBlurDisplayName}
+        onChange={onChangeDisplayName}
+        placeholder="Jane Doe"
+        value={displayName || ''}
+      />
       {displayNameError && <ErrorMessage>{displayNameError}</ErrorMessage>}
       <Actions>
         <Button disabled>Play</Button>

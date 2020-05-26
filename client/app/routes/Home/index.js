@@ -159,7 +159,7 @@ const HomeRoute = () => {
       />
       {displayNameError && <ErrorMessage>{displayNameError}</ErrorMessage>}
       <Actions>
-        <Button disabled>Play</Button>
+        {/* <Button disabled>Play</Button> */}
         <Button disabled={pending} onClick={createPrivateRoom}>
           {state.creatingRoom ? <Loading color={colors.white} size="0.5rem" /> : 'Create Private Room'}
         </Button>

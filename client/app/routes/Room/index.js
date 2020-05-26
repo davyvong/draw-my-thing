@@ -18,7 +18,8 @@ import { Container, Header, Subtitle, Title, Wrapper } from './styled';
 const RoomRoute = ({ match }) => {
   const drawingPanel = useRef();
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [{ error, pending }, request] = useGraphQL({ pending: true });
+  const [, request] = useGraphQL();
+  const [{ error, pending }, initRequest] = useGraphQL({ pending: true });
   const profile = useProfile();
   const [profileModal, setProfileModal] = useState(false);
 
@@ -75,7 +76,7 @@ const RoomRoute = ({ match }) => {
 
   useEffect(() => {
     if (profile.state.displayName) {
-      request(
+      initRequest(
         {
           data: {
             query: queries.joinRoom(code),

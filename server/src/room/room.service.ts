@@ -128,10 +128,17 @@ export class RoomService {
     if (!room) {
       throw new NotFoundException();
     }
-    const drawingPlayer = room.players[0];
-    const startTime = moment().unix();
+    try {
+      const previousTimeout = this.schedulerRegistry.getTimeout(`room.${code}.nextRound`);
+      if (previousTimeout) {
+        clearTimeout(previousTimeout);
+        this.schedulerRegistry.deleteTimeout(`room.${code}.nextRound`);
+      }
+    } catch {}
     const nextRoundTimeout = setTimeout(() => this.startNextRound(code), 60000);
     this.schedulerRegistry.addTimeout(`room.${code}.nextRound`, nextRoundTimeout);
+    const startTime = moment().unix();
+    const drawingPlayer = room.players[0];
     const update = {
       drawing: [],
       drawingPlayer: drawingPlayer.id,
@@ -154,11 +161,13 @@ export class RoomService {
 
   async startNextRound(code: string): Promise<void> {
     console.log(code, moment().toISOString());
-    const previousTimeout = this.schedulerRegistry.getTimeout(`room.${code}.nextRound`);
-    if (previousTimeout) {
-      clearTimeout(previousTimeout);
-      this.schedulerRegistry.deleteTimeout(`room.${code}.nextRound`);
-    }
+    try {
+      const previousTimeout = this.schedulerRegistry.getTimeout(`room.${code}.nextRound`);
+      if (previousTimeout) {
+        clearTimeout(previousTimeout);
+        this.schedulerRegistry.deleteTimeout(`room.${code}.nextRound`);
+      }
+    } catch {}
     const room = await this.findByCode(code);
     if (!room) {
       throw new NotFoundException();

@@ -1,10 +1,11 @@
-import { BadRequestException, Inject, NotFoundException, UseGuards, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, NotFoundException, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSubEngine } from 'graphql-subscriptions';
 import get from 'lodash/get';
 import { Account } from 'src/account/models/account.model';
 import { CurrentAccount } from 'src/auth/decorators/current-account.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { withCancel } from 'src/common/graphql/with-cancel';
 
 import { DrawingInput } from './dto/drawing.input';
 import { Drawing } from './models/drawing.model';
@@ -107,7 +108,12 @@ export class RoomResolver {
       return payload.roomEvents;
     }
   })
-  roomEvents() {
-    return this.pubSub.asyncIterator('roomEvents');
+  roomEvents(arg1: unknown, arg2: unknown, { connection }) {
+    return withCancel(this.pubSub.asyncIterator('roomEvents'), () => {
+      const { code, id } = connection.variables;
+      if (id && code) {
+        this.roomService.leave(id, code);
+      }
+    });
   }
 }

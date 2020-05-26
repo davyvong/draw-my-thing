@@ -19,6 +19,12 @@ function reducer(state, action) {
         draft.playerIds.add(id);
         return draft;
       }
+      case 'leftRoom': {
+        const { id } = action.data;
+        delete draft.playerObjs[id];
+        draft.playerIds.delete(id);
+        return draft;
+      }
       case 'gameStart':
       case 'roundStart': {
         return Object.assign(draft, action.data);

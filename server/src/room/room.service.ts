@@ -4,6 +4,7 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import sha256 from 'crypto-js/sha256';
 import { PubSubEngine } from 'graphql-subscriptions';
 import moment from 'moment';
+import { AccountService } from 'src/account/account.service';
 import { randomWord } from 'src/common/utils/random-word.utils';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -17,6 +18,7 @@ export class RoomService {
   constructor(
     @Inject('PubSub') private readonly pubSub: PubSubEngine,
     @InjectModel('Room') private readonly roomModel,
+    private readonly accountService: AccountService,
     private readonly schedulerRegistry: SchedulerRegistry,
   ) { }
 
@@ -88,6 +90,33 @@ export class RoomService {
       this.sendSystemMessage(code, `${player.displayName} has joined the room.`);
     }
     return room;
+  }
+
+  async leave(playerId: string, code: string): Promise<void> {
+    const player = await this.accountService.findById(playerId);
+    if (!player) {
+      throw new NotFoundException();
+    }
+    const room = await this.roomModel.findOneAndUpdate({ code }, { $pull: { players: { id: playerId } } });
+    if (!room) {
+      throw new NotFoundException();
+    }
+    this.pubSub.publish('roomEvents', {
+      roomEvents: {
+        code,
+        data: {
+          displayName: player.displayName,
+          id: playerId,
+        },
+        type: 'leftRoom',
+      },
+    });
+    if (player.displayName) {
+      this.sendSystemMessage(code, `${player.displayName} has left the room.`);
+    }
+    if (room.drawingPlayer === playerId) {
+      this.startNextRound(code);
+    }
   }
 
   async startGame(code: string): Promise<Room> {

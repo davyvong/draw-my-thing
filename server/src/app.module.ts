@@ -3,10 +3,11 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import GraphQLJSON from 'graphql-type-json';
+import { ConnectionContext } from 'subscriptions-transport-ws';
 
 import { AccountModule } from './account/account.module';
 import { AuthModule } from './auth/auth.module';
-import { formatError } from './common/graphql/formatError';
+import { formatError } from './common/graphql/format-error';
 import { RoomModule } from './room/room.module';
 
 @Module({
@@ -19,7 +20,15 @@ import { RoomModule } from './room/room.module';
       introspection: process.env.NODE_ENV === 'development',
       playground: process.env.NODE_ENV === 'development',
       resolvers: { JSON: GraphQLJSON },
-      subscriptions: { keepAlive: 5000 }
+      subscriptions: {
+        keepAlive: 5000,
+        onDisconnect: async (socket, context: ConnectionContext) => {
+          const { subscriptionClient } = await context.initPromise;
+          if (subscriptionClient) {
+            subscriptionClient.close();
+          }
+        }
+      }
     }),
     MongooseModule.forRoot(process.env.MONGO_URI, {
       useFindAndModify: false,

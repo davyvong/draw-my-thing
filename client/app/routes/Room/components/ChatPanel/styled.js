@@ -37,7 +37,7 @@ const StyledWrapper = styled.div`
   align-items: stretch;
   border-left: 1px solid ${hexToRGB(colors.gray, 0.25, { useAlpha: false })};
   display: flex;
-  flex: 0.35;
+  flex: 35;
   flex-direction: column;
   min-height: 100vh;
   padding: 1.5rem;

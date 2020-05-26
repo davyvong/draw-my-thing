@@ -130,6 +130,7 @@ export class RoomService {
     if (!room) {
       throw new NotFoundException();
     }
+    this.sendSystemMessage(code, `The secret word was ${room.secretWord}.`);
     let drawingPlayerCursor = room.drawingPlayerCursor < room.players.length - 1 ? room.drawingPlayerCursor + 1 : 0;
     while (room.players.some(player => player.displayName) && !room.players[drawingPlayerCursor].displayName) {
       drawingPlayerCursor = drawingPlayerCursor < room.players.length - 1 ? drawingPlayerCursor + 1 : 0;

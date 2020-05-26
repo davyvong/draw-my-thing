@@ -3,7 +3,7 @@ import Title from 'components/Typography/Title';
 import styled from 'styled-components';
 
 const StyledContainer = styled.div`
-  flex: 0.65;
+  flex: 65;
   margin: 1.5rem 0;
   max-height: 100vh;
   max-width: 1024px;

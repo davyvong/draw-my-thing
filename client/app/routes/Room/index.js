@@ -212,11 +212,10 @@ const RoomRoute = ({ match }) => {
     return null;
   }
 
-  if (error.message === 'Not Found') {
-    return <NotFoundRoute />;
-  }
-
   if (error) {
+    if (error.message === 'Not Found') {
+      return <NotFoundRoute />;
+    }
     throw error;
   }
 

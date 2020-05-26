@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
+import NotFoundRoute from '../NotFound/Loadable';
 import ChatPanel from './components/ChatPanel';
 import CountdownTimer from './components/CountdownTimer';
 import DrawingPanel from './components/DrawingPanel';
@@ -17,7 +18,7 @@ import { Container, Header, Subtitle, Title, Wrapper } from './styled';
 const RoomRoute = ({ match }) => {
   const drawingPanel = useRef();
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [, request] = useGraphQL();
+  const [{ error, pending }, request] = useGraphQL({ pending: true });
   const profile = useProfile();
   const [profileModal, setProfileModal] = useState(false);
 
@@ -206,6 +207,18 @@ const RoomRoute = ({ match }) => {
       data: width,
     });
   }, []);
+
+  if (pending) {
+    return null;
+  }
+
+  if (error.message === 'Not Found') {
+    return <NotFoundRoute />;
+  }
+
+  if (error) {
+    throw error;
+  }
 
   return (
     <React.Fragment>

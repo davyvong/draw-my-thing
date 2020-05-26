@@ -95,11 +95,11 @@ export class RoomService {
   async leave(playerId: string, code: string): Promise<void> {
     const player = await this.accountService.findById(playerId);
     if (!player) {
-      throw new NotFoundException();
+      return;
     }
     const room = await this.roomModel.findOneAndUpdate({ code }, { $pull: { players: { id: playerId } } });
     if (!room) {
-      throw new NotFoundException();
+      return;
     }
     this.pubSub.publish('roomEvents', {
       roomEvents: {

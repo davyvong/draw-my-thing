@@ -113,8 +113,8 @@ module.exports = require('./webpack.base.babel')({
       hashDigestLength: 20,
     }),
     new webpack.EnvironmentPlugin({
-      GRAPHQL_HTTP_URL: 'https://davyvong-drawmything.herokuapp.com/graphql',
-      GRAPHQL_WS_URL: 'wss://davyvong-drawmything.herokuapp.com/graphql',
+      GRAPHQL_HTTP_URL: 'https://api.davyvong.com/drawmything/graphql',
+      GRAPHQL_WS_URL: 'wss://api.davyvong.com/drawmything/graphql',
       NODE_ENV: 'production',
     }),
     new CopyPlugin([{ from: 'app/robots.txt' }]),

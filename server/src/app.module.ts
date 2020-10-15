@@ -28,7 +28,8 @@ import { RoomModule } from './room/room.module';
             subscriptionClient.close();
           }
         }
-      }
+      },
+      useGlobalPrefix: true,
     }),
     MongooseModule.forRoot(process.env.MONGO_URI, {
       useFindAndModify: false,

@@ -8,7 +8,7 @@
     "start": "cross-env NODE_ENV=development nest start -e \"ts-node -r ./src/config\"",
     "start:dev": "npm run start -- --watch",
     "start:debug": "npm run start -- --debug --watch",
-    "start:prod": "cross-env NODE_ENV=production node -r ./dist/src/config dist/src/main",
+    "start:prod": "cross-env NODE_ENV=production node -r ./dist/config dist/main",
     "lint": "eslint \"{src,test}/**/*.ts\" --fix",
     "test": "cross-env NODE_ENV=test jest --coverage",
     "test:clean": "rimraf coverage",

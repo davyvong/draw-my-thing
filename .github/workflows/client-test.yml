@@ -1,0 +1,18 @@
+name: Client Test
+
+on:
+  push:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+        working-directory: client
+      - name: Lint
+        run: npm run lint
+        working-directory: client

@@ -7,10 +7,6 @@
         "destination": "/index.html"
       }
     ],
-    "predeploy": [
-      "npm run lint",
-      "npm run build"
-    ],
     "public": "build"
   }
 }

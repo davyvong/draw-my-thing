@@ -28,7 +28,7 @@ import { RoomModule } from './room/room.module';
             subscriptionClient.close();
           }
         },
-	path: `/${process.env.GLOBAL_PREFIX}/graphql`,
+        path: `/${process.env.GLOBAL_PREFIX}`,
       },
       useGlobalPrefix: true,
     }),

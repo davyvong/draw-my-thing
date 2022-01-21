@@ -6,4 +6,6 @@ services:
       dockerfile: "Dockerfile"
     environment:
       NEST_HOST: "0.0.0.0"
-      NEST_PORT: "5000"
+      NEST_PORT: "4100"
+    ports:
+      - "4100:4100"

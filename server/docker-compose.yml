@@ -5,6 +5,7 @@ services:
     build:
       dockerfile: "Dockerfile"
     environment:
+      GLOBAL_PREFIX: "drawmything"
       NEST_HOST: "0.0.0.0"
       NEST_PORT: "4100"
     ports:

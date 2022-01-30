@@ -5,6 +5,9 @@
 node_modules
 package-lock.json
 
+# Docker
+docker-compose.local.yml
+
 # Jest
 coverage
 

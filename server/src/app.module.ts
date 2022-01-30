@@ -18,6 +18,7 @@ import { RoomModule } from './room/room.module';
       formatError,
       installSubscriptionHandlers: true,
       introspection: process.env.NODE_ENV === 'development',
+      path: `/${process.env.GLOBAL_PREFIX}`,
       playground: process.env.NODE_ENV === 'development',
       resolvers: { JSON: GraphQLJSON },
       subscriptions: {
@@ -28,9 +29,8 @@ import { RoomModule } from './room/room.module';
             subscriptionClient.close();
           }
         },
-	path: `/${process.env.GLOBAL_PREFIX}/graphql`,
+        path: `/${process.env.GLOBAL_PREFIX}`,
       },
-      useGlobalPrefix: true,
     }),
     MongooseModule.forRoot(process.env.MONGO_URI, {
       useFindAndModify: false,

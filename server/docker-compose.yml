@@ -3,10 +3,12 @@ version: "3.9"
 services:
   server:
     build:
+      context: "./"
       dockerfile: "Dockerfile"
     environment:
       GLOBAL_PREFIX: "drawmything"
       NEST_HOST: "0.0.0.0"
       NEST_PORT: "4100"
+    image: "davyvong/draw-my-thing"
     ports:
       - "4100:4100"

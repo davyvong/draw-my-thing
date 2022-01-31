@@ -1,6 +1,10 @@
 DOCKER_COMPOSE = docker-compose \
 	--file docker-compose.yml \
+	
+ifneq ($(env),ci)
+DOCKER_COMPOSE := ${DOCKER_COMPOSE} \
 	--file docker-compose.local.yml
+endif
 
 build:
 	${DOCKER_COMPOSE} build

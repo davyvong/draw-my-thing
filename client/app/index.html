@@ -19,6 +19,21 @@
     <strong>JavaScript has been disabled on your browser</strong>, please
     <strong>enable JS</strong> to make this app work.</noscript>
   <div id="app"></div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.7.0/firebase-analytics.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyDUre4nKtiwBpUvVjYQ1u154kF1yEKVwC4",
+      authDomain: "drawmything-davyvong-com.firebaseapp.com",
+      projectId: "drawmything-davyvong-com",
+      storageBucket: "drawmything-davyvong-com.appspot.com",
+      messagingSenderId: "665851094812",
+      appId: "1:665851094812:web:89d6d84fbb237bff8c7cd9",
+      measurementId: "G-F19RMR4HEV"
+    };
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
 </body>
 
 </html>

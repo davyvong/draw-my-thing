@@ -28,7 +28,7 @@
     "apollo-server-fastify": "2.14.2",
     "bcrypt": "^5.0.0",
     "class-transformer": "^0.3.1",
-    "class-validator": "^0.11.1",
+    "class-validator": "^0.14.0",
     "cross-env": "^7.0.2",
     "crypto-js": "^4.0.0",
     "dotenv": "^8.2.0",
